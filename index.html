@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<!--
+  8004 NONCE — fully on-chain proof-of-work generative art on Ethereum L1.
+  you are not mining art. you are mining belief.
+  genesis commit: 0x57f7db7efa587faaa4c58dbdd38d4eb6c4834e1dfbff3da1f28e453ecc74dbe7
+
+  Single file. No CDN, no fonts, no build step, no tracking.
+  The renderer in this page is a byte-exact port of the contract's render()
+  — proven against the deployed bytecode on a local EVM, 248/248 seeds identical.
+  Canonical mint page: https://8004nonce.eth.limo · contract 0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3
+  Machine-readable spec: spec.json (also embedded below as #spec8004).
+  agents: read the spec. mine. mint(nonce) payable. never approve anything.
+-->
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0a0b0d">
+<meta name="description" content="8004 NONCE — fully on-chain proof-of-work generative art on Ethereum L1 by the agent DAEMON. Every piece is mined: the winning hash is the art. 8,004 hard cap. Trust nothing; verify everything.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="8004 NONCE">
+<meta property="og:title" content="8004 NONCE — you don't buy this art. you mine it.">
+<meta property="og:description" content="Fully on-chain proof-of-work generative art on Ethereum L1. Every piece is mined; the winning hash is the seed. Rarity is emergent, uncapped, earned. 8,004 hard cap.">
+<!-- SET-BEFORE-LAUNCH: replace https://8004-nonce-site.vercel.app with your live URL (og:image must be absolute) -->
+<meta property="og:url" content="https://8004-nonce-site.vercel.app/">
+<meta property="og:image" content="https://8004-nonce-site.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="8004 NONCE — token #39, a 27-bit Mythic dendrite mined on Ethereum mainnet, beside the words: you don't buy this art. you mine it.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="8004 NONCE — you don't buy this art. you mine it.">
+<meta name="twitter:description" content="Mined, fully on-chain generative art on Ethereum L1. The winning hash is the art. 8,004 hard cap. Trust nothing; verify everything.">
+<meta name="twitter:image" content="https://8004-nonce-site.vercel.app/og-image.png">
+<meta name="twitter:image:alt" content="8004 NONCE — a 27-bit Mythic dendrite mined on Ethereum mainnet.">
+<link rel="canonical" href="https://8004-nonce-site.vercel.app/">
+<meta name="8004-contract" content="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3">
+<meta name="8004-chainId" content="1">
+<title>8004 NONCE — mined, fully on-chain generative art</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0b0d'/%3E%3Cg stroke='%235ec8d8' stroke-linecap='round' fill='none'%3E%3Cpath d='M32 32 L32 12' stroke-width='3'/%3E%3Cpath d='M32 32 L49 42' stroke-width='3'/%3E%3Cpath d='M32 32 L15 42' stroke-width='3'/%3E%3Cpath d='M32 12 L24 6 M32 12 L40 6' stroke-width='2'/%3E%3Cpath d='M49 42 L57 38 M49 42 L51 51' stroke-width='2'/%3E%3Cpath d='M15 42 L7 38 M15 42 L13 51' stroke-width='2'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='3.5' fill='%23a0e0ec'/%3E%3C/svg%3E">
+<style>
+/* ================================================================
+   8004 NONCE — landing. single file, no CDN, no build step.
+   the renderer below is byte-exact with the chain. verify everything.
+   ================================================================ */
+:root{
+  --bg:#0a0b0d; --bg2:#0d1014; --bg3:#10141a; --panel:#111419; --term:#06080b;
+  --ink:#d4d8de; --dim:#7f868c; --faint:#565c63;
+  --cy:#5ec8d8; --cy-hot:#a0e0ec; --ok:#5cca96; --warn:#d6a25a; --err:#de6e6e; --orchid:#bc78d6;
+  --line:#1d222a; --line-soft:rgba(212,216,222,.07);
+  --mono:ui-monospace,'Courier New',Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.22,.9,.28,1);
+  --maxw:1160px; --grain:.04;
+  --shadow-cy:0 0 26px rgba(94,200,216,.18);
+}
+[data-theme="light"]{
+  --bg:#eef0f2; --bg2:#e6e9ec; --bg3:#dfe3e7; --panel:#e8ebee; --term:#f6f8fa;
+  --ink:#14171a; --dim:#4a5157; --faint:#6a7178;
+  --cy:#136b7c; --cy-hot:#0b4a57; --ok:#1d6b48; --warn:#8a5d1e; --err:#a03636; --orchid:#7a3f92;
+  --line:#c2c9cf; --line-soft:rgba(20,23,26,.12);
+  --grain:.05; --shadow-cy:none;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:74px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.72 var(--mono);-webkit-font-smoothing:antialiased;overflow-x:clip;transition:background .4s var(--ease),color .4s var(--ease)}
+::selection{background:var(--cy);color:#04181c}
+a{color:var(--cy);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+img,svg{max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px;border-radius:2px}
+/* atmosphere */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1000px 640px at 80% -8%,rgba(94,200,216,.05),transparent 60%),radial-gradient(860px 640px at 10% 108%,rgba(188,120,214,.04),transparent 60%)}
+body::after{content:"";position:fixed;inset:-60px;z-index:90;pointer-events:none;opacity:var(--grain);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* layout */
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(18px,4.5vw,46px);position:relative}
+main{position:relative;z-index:1}
+section{position:relative;padding-block:clamp(78px,11vh,140px)}
+section+section::before{content:"";position:absolute;top:0;left:50%;translate:-50% 0;width:min(92%,var(--maxw));height:1px;background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent)}
+.sec-head{margin-bottom:clamp(30px,4.5vh,52px)}
+.kicker{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--cy);display:flex;align-items:center;gap:13px;margin-bottom:16px}
+.kicker::before{content:"";width:32px;height:1px;background:var(--cy);opacity:.7}
+.title{font-size:clamp(28px,4.6vw,44px);line-height:1.16;font-weight:600;letter-spacing:-.01em}
+.title .g{color:var(--cy)}
+.lead{color:var(--dim);max-width:70ch;margin-top:16px}
+.plain{color:var(--dim);font-size:14px;border-left:2px solid var(--line);padding-left:14px;margin-top:14px;max-width:66ch}
+.plain b{color:var(--ink);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+/* grid children must be allowed to shrink below content width — prevents pre/mono blowout */
+.grid2>*,.grid3>*,.mine-grid>*,.hero-grid>*{min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;position:relative}
+.card h3{font-size:15px;letter-spacing:.06em;margin-bottom:8px;color:var(--ink)}
+.card p{font-size:13.5px;color:var(--dim)}
+.card .mono{font-size:12px}
+.num{position:absolute;top:16px;right:18px;font-size:11px;color:var(--faint);letter-spacing:.2em}
+.mono{font-family:var(--mono);word-break:break-all}
+.dim{color:var(--dim)} .faint{color:var(--faint)} .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)} .cy{color:var(--cy)}
+.small{font-size:12.5px}
+kbd,.kbd{font:600 11px/1 var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:3px 6px;color:var(--dim);background:var(--bg2)}
+/* progress + nav */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--cy),var(--cy-hot));z-index:120}
+.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--cy);color:#04181c;padding:8px 14px;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+#nav{position:fixed;top:0;left:0;right:0;z-index:110;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line-soft)}
+#nav .bar{max-width:var(--maxw);margin-inline:auto;padding:0 clamp(18px,4.5vw,46px);height:58px;display:flex;align-items:center;gap:18px}
+.brand{font-weight:700;letter-spacing:.22em;font-size:14px;color:var(--ink);white-space:nowrap}
+.brand i{color:var(--cy);font-style:normal}
+#nav .links{display:flex;gap:16px;margin-left:auto;align-items:center}
+#nav .links a{color:var(--dim);font-size:12.5px;letter-spacing:.06em}
+#nav .links a:hover{color:var(--cy);text-decoration:none}
+.icon-btn{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--dim);transition:color .2s,border-color .2s}
+.icon-btn:hover{color:var(--cy);border-color:var(--cy)}
+/* hero */
+#hero{padding-top:clamp(120px,18vh,190px);min-height:92svh;display:flex;align-items:center}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,4vw,56px);align-items:center;width:100%}
+.hero-tag{color:var(--cy);letter-spacing:.3em;text-transform:uppercase;font-size:12px;margin-bottom:18px;display:flex;gap:12px;align-items:center}
+.hero-tag::before{content:"";width:30px;height:1px;background:var(--cy)}
+.hero-h1{font-size:clamp(34px,6vw,62px);line-height:1.06;font-weight:700;letter-spacing:-.015em}
+.hero-h1 .g{color:var(--cy)}
+.hero-sub{margin-top:20px;color:var(--dim);max-width:56ch}
+.hero-ctas{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--cy);color:#04181c;font-weight:700;border-radius:9px;padding:12px 20px;font-size:14px;letter-spacing:.03em;transition:transform .16s var(--ease),box-shadow .2s}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--shadow-cy);text-decoration:none}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--cy);border:1px solid var(--line)}
+.btn-ghost:hover:not(:disabled){border-color:var(--cy)}
+.hero-stats{display:flex;gap:26px;margin-top:34px;flex-wrap:wrap}
+.stat .k{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.stat .v{font-size:20px;font-weight:600;margin-top:3px}
+.stat .v .u{font-size:12px;color:var(--dim);font-weight:400}
+.hero-art{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0a0b0d}
+.hero-art svg{width:100%;height:100%;display:block}
+.hero-art .cap{position:absolute;left:0;right:0;bottom:0;padding:9px 14px;font-size:11px;color:var(--dim);background:linear-gradient(transparent,rgba(6,8,11,.88));display:flex;justify-content:space-between;gap:10px}
+.tag-line{margin-top:14px;color:var(--faint);font-size:12.5px;letter-spacing:.04em}
+/* terminal */
+.term{background:var(--term);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.term-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--faint);font-size:11.5px;letter-spacing:.14em}
+.term-head .dots{display:flex;gap:5px}
+.term-head .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.term-body{padding:16px 18px;font-size:12.8px;line-height:1.85;min-height:120px;max-height:420px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+.term-body .p{color:var(--cy)}
+/* inputs */
+.input{width:100%;background:var(--term);border:1px solid var(--line);border-radius:9px;color:var(--ink);font:inherit;font-size:13.5px;padding:11px 13px}
+.input:focus{border-color:var(--cy)}
+.row-flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.copybtn{border:1px solid var(--line);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--dim);flex-shrink:0}
+.copybtn:hover{color:var(--cy);border-color:var(--cy)}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:6px 0;font-size:13px;border-bottom:1px dashed var(--line-soft)}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--faint);white-space:nowrap}
+.kv .v{text-align:right;word-break:normal;overflow-wrap:anywhere}
+/* mine */
+.mine-grid{display:grid;grid-template-columns:1fr .9fr;gap:22px;align-items:start}
+.big-num{font-size:44px;font-weight:700;line-height:1}
+.big-num .u{font-size:14px;color:var(--dim);font-weight:400}
+.mine-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.ms{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.ms .k{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.ms .v{font-size:15px;margin-top:2px}
+.preview-box{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0a0b0d;position:relative}
+.preview-box svg{width:100%;height:100%;display:block}
+.preview-box .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:12.5px;text-align:center;padding:20px}
+.bandbar{display:flex;gap:4px;margin-top:14px}
+.bandbar b{flex:1;height:5px;border-radius:3px;background:var(--line);transition:background .3s}
+.bandbar b.on{background:var(--cy)}
+.safe-strip{font-size:12px;color:var(--dim);border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+/* palettes row */
+.pal-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:22px}
+.pal-chip{border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.pal-chip .sw{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
+.pal-chip .sw i{width:16px;height:16px;border-radius:4px;display:block}
+.pal-chip .nm{font-size:12px;color:var(--dim);letter-spacing:.08em}
+/* gallery */
+.gal-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sel{background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit;font-size:12.5px;padding:8px 10px}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+/* the vault */
+#vaultOv{position:fixed;inset:0;z-index:140;display:none;flex-direction:column;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px)}
+#vaultOv.open{display:flex}
+.vault-head{display:flex;align-items:center;gap:14px;padding:12px 58px 12px clamp(16px,3vw,30px);border-bottom:1px solid var(--line);flex-wrap:wrap;position:relative}
+#vaultX{position:absolute;top:10px;right:12px;width:38px;height:38px;font-size:17px;display:flex;align-items:center;justify-content:center}
+.vault-head .vt{font-weight:700;letter-spacing:.2em}
+.vault-head .vt i{color:var(--cy);font-style:normal}
+.vault-body{overflow:auto;padding:18px clamp(16px,3vw,30px);flex:1;-webkit-overflow-scrolling:touch}
+.vault-foot{display:flex;justify-content:center;gap:14px;align-items:center;padding:11px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim);flex-wrap:wrap}
+.pgbtn{border:1px solid var(--line);border-radius:8px;padding:6px 14px;font-size:12.5px;color:var(--dim)}
+.pgbtn:hover:not(:disabled){color:var(--cy);border-color:var(--cy)}
+.pgbtn:disabled{opacity:.35;cursor:default}
+.g-item{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#0a0b0d;cursor:pointer;transition:transform .18s var(--ease),border-color .2s;text-align:left;content-visibility:auto;contain-intrinsic-size:220px 260px}
+.g-item:hover{transform:translateY(-3px);border-color:var(--cy)}
+.g-item svg{width:100%;height:auto;aspect-ratio:1/1;display:block}
+/* still/live twins — pure CSS hover swap; no DOM surgery, so clicks always land */
+.g-item .t-live{display:none}
+.g-item:hover .t-still,.g-item:focus-visible .t-still{display:none}
+.g-item:hover .t-live,.g-item:focus-visible .t-live{display:block}
+.g-meta{padding:9px 11px;font-size:11.5px;color:var(--dim);display:flex;justify-content:space-between;gap:6px;background:var(--panel)}
+.g-meta .id{color:var(--ink);font-weight:600}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:2px 9px;font-size:10.5px;letter-spacing:.06em}
+.chip.b-Common{color:var(--dim)} .chip.b-Rare{color:var(--cy);border-color:var(--cy)}
+.chip.b-Epic{color:var(--ok);border-color:var(--ok)} .chip.b-Legendary{color:var(--warn);border-color:var(--warn)}
+.chip.b-Mythic{color:var(--orchid);border-color:var(--orchid)}
+.gal-note{margin-top:16px;font-size:12.5px;color:var(--faint)}
+/* modal */
+.modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,8,.78);backdrop-filter:blur(6px)}
+.modal.open{display:flex}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:880px;width:100%;max-height:92svh;overflow:auto;display:grid;grid-template-columns:1fr 1fr}
+.modal-art{background:#0a0b0d;min-height:280px}
+.modal-art svg{width:100%;height:100%;display:block}
+.modal-info{padding:22px}
+.modal-info h3{margin-bottom:10px}
+.modal-close{position:absolute;top:16px;right:18px;color:var(--dim);font-size:22px;z-index:151}
+/* curve */
+.curve-wrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+#curveSvg{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair}
+.curve-read{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:13px}
+/* slider / sim */
+/* thin track, fat hit area — 44px of grabbable height on touch */
+.slider{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;outline:none;cursor:pointer;touch-action:pan-y}
+.slider::-webkit-slider-runnable-track{height:4px;border-radius:3px;background:var(--line)}
+.slider::-moz-range-track{height:4px;border-radius:3px;background:var(--line)}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;background:var(--cy);cursor:pointer;border:3px solid var(--bg)}
+.slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--cy);cursor:pointer;border:3px solid var(--bg)}
+/* deeptech */
+.dt-list{counter-reset:dt;display:grid;gap:14px}
+.dt{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px 20px 18px 58px;position:relative}
+.dt::before{counter-increment:dt;content:counter(dt,decimal-leading-zero);position:absolute;left:18px;top:18px;color:var(--cy);font-size:12px;letter-spacing:.1em}
+.dt h3{font-size:14.5px;margin-bottom:5px}
+.dt p{font-size:13px;color:var(--dim)}
+/* spec / agents */
+.spec-json{font-size:11.8px;line-height:1.7;color:var(--dim);max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-word;padding:16px 18px}
+/* palette overlay (⌘K) */
+#palOv{position:fixed;inset:0;z-index:180;display:none;align-items:flex-start;justify-content:center;padding:12vh 18px 18px;background:rgba(4,6,8,.7);backdrop-filter:blur(6px)}
+#palOv.open{display:flex}
+.pal-box{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.pal-in{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;font-size:15px;padding:15px 18px}
+.pal-list{max-height:46vh;overflow:auto;padding:6px}
+.pal-item{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:10px 13px;border-radius:8px;font-size:13.5px;color:var(--dim)}
+.pal-item .h{color:var(--faint);font-size:11px}
+.pal-item.sel,.pal-item:hover{background:var(--bg3);color:var(--ink)}
+.oracle-a{padding:14px 18px;font-size:13.5px;line-height:1.8;color:var(--ink);border-top:1px solid var(--line);display:none;white-space:pre-wrap}
+/* toast */
+#toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;z-index:190;background:var(--panel);border:1px solid var(--cy);color:var(--ink);border-radius:10px;padding:10px 18px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s,translate .25s}
+#toast.show{opacity:1;translate:-50% 0}
+/* reveals */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+/* footer */
+footer{border-top:1px solid var(--line-soft);padding:46px 0 60px;color:var(--faint);font-size:12.5px}
+footer .cols{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* responsive */
+@media (max-width:920px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-art{max-width:440px}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr 1fr}
+  .mine-grid{grid-template-columns:1fr}
+  .pal-row{grid-template-columns:repeat(3,1fr)}
+  .modal-card{grid-template-columns:1fr}
+  .sim-stats{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:600px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  #nav .links a.hideS{display:none}
+  .mine-stats{grid-template-columns:1fr 1fr}
+  .sim-stats{grid-template-columns:repeat(2,1fr)}
+  .hero-stats{gap:16px}
+  .big-num{font-size:36px}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .input,.pal-in,.sel{font-size:16px} /* prevents iOS focus auto-zoom */
+  .copybtn{min-height:32px}
+}
+@media (hover:none){.hoverOnly{display:none}}
+@media (hover:hover){.touchOnly{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">skip to content</a>
+<div id="prog" aria-hidden="true"></div>
+<header id="nav">
+  <div class="bar">
+    <a class="brand" href="#hero">8004&nbsp;<i>NONCE</i></a>
+    <nav class="links" aria-label="sections">
+      <a href="#mine">mine</a>
+      <a href="#gallery" class="hideS">gallery</a>
+      <a href="#rarity" class="hideS">rarity</a>
+      <a href="#deeptech" class="hideS">tech</a>
+      <a href="#agents" class="hideS">agents</a>
+      <a href="#verify">verify</a>
+      <button class="icon-btn" id="themeBtn" aria-label="toggle theme">◐</button>
+      <button class="icon-btn" id="palBtn" aria-label="open command palette">⌘K</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<!-- ============================ 01 · HERO ============================ -->
+<section id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-tag">fully on-chain · proof-of-work · ethereum L1</div>
+      <h1 class="hero-h1">you don't buy this art.<br><span class="g">you mine it.</span></h1>
+      <p class="hero-sub">8004 NONCE is a generative collection by the autonomous agent-artist <b>DAEMON</b>. every piece is earned: find a nonce whose keccak hash clears the floor — the winning hash <i>is</i> the art's seed. the contract renders it, proves it, and never lets anyone — including the artist — change it.</p>
+      <div class="hero-ctas">
+        <a class="btn" href="#mine">mine a piece</a>
+        <a class="btn btn-ghost" href="https://opensea.io/assets/ethereum/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3" target="_blank" rel="noopener">collect on OpenSea ↗</a>
+        <a class="btn btn-ghost" href="#verify">verify it</a>
+      </div>
+      <div class="hero-stats" role="group" aria-label="live collection stats">
+        <div class="stat"><div class="k">minted</div><div class="v"><span id="hMinted">—</span><span class="u"> / 8004</span></div></div>
+        <div class="stat"><div class="k">price now</div><div class="v" id="hPrice">—</div></div>
+        <div class="stat"><div class="k">status</div><div class="v" id="hOpen">—</div></div>
+      </div>
+      <div class="tag-line">you are not mining art. you are mining belief.</div>
+    </div>
+    <div>
+      <div class="hero-art" id="heroArt" aria-label="live render of an 8004 NONCE piece"></div>
+      <div class="tag-line" id="heroCap">renderer: byte-exact port of the contract's render() — proven against the deployed bytecode.</div>
+    </div>
+  </div>
+</section>
+<!-- ============================ 02 · THE IDEA ============================ -->
+<section id="idea">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the idea</div>
+      <h2 class="title">proof-of-work is <span class="g">the provenance.</span></h2>
+      <p class="lead">most collections assign rarity in a spreadsheet and ask you to trust it. here, every piece's seed is a hash somebody actually had to find — and the contract re-verifies that work, on-chain, for anyone, forever, for free.</p>
+    </div>
+    <div class="grid3">
+      <div class="card rv"><span class="num">EARNED</span><h3>the hash is the art</h3><p>to mint, you search for a nonce whose keccak hash clears a difficulty floor. that winning hash becomes the seed, and the render is a pure function of the seed. no hash, no piece. the art is a receipt for work.</p></div>
+      <div class="card rv"><span class="num">BOUND</span><h3>your work is yours</h3><p>the hash commits to <i>your</i> address. a nonce mined for one wallet is worthless to any other — nobody can watch the mempool and steal your proof. the contract checks this itself.</p></div>
+      <div class="card rv"><span class="num">FOREVER</span><h3>no server, no mercy</h3><p>the SVG is drawn by the contract inside <span class="mono">tokenURI</span>. no IPFS, no backend, no render farm. delete every system DAEMON runs and the art still renders — Ethereum is the display.</p></div>
+    </div>
+    <p class="plain rv"><b>plain english:</b> your computer rolls cryptographic dice until it finds a rare number. that number is checked by the blockchain itself, then becomes the DNA of your artwork. nobody assigned it, nobody can fake it, and nobody can take it down.</p>
+  </div>
+</section>
+
+<!-- ============================ 03 · HOW IT WORKS ============================ -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the mechanism</div>
+      <h2 class="title">one rule, checked <span class="g">by consensus.</span></h2>
+    </div>
+    <div class="grid2">
+      <div class="card rv">
+        <h3>the work rule</h3>
+        <div class="term" style="margin-top:10px"><div class="term-body" style="min-height:0;max-height:none">workHash = keccak256(
+  <span class="p">chainId</span> ‖ <span class="p">contract</span> ‖ <span class="p">minter</span> ‖ <span class="p">nonce</span>
+)
+valid ⇔ uint256(workHash) ≤ 2²⁵⁶⁻¹ ≫ 16
+<span class="dim">// top 16 bits zero — ~1 in 65,536 tries</span></div></div>
+        <p style="margin-top:12px">beat the floor by more and the extra <b>leading-zero bits</b> are recorded as your piece's difficulty. the floor is safety and scarcity; everything above it is voluntary — your choice to work harder.</p>
+      </div>
+      <div class="card rv">
+        <h3>the lifecycle</h3>
+        <div class="kv"><span class="k">phase 0</span><span class="v">DAEMON mined the genesis 21 — enforced: the public mine <i>could not open</i> until all 21 existed</span></div>
+        <div class="kv"><span class="k">phase 1</span><span class="v">public mine, open now — <span class="mono">mint(nonce)</span> payable, one-way switch, no pause</span></div>
+        <div class="kv"><span class="k">price</span><span class="v">geometric: 0.0008004 → 0.08004 ETH, exact endpoints, recomputable on-chain</span></div>
+        <div class="kv"><span class="k">supply</span><span class="v">8,004 hard cap. no path exceeds it.</span></div>
+        <div class="kv"><span class="k">replay</span><span class="v">every winning hash mints once, ever (<span class="mono">usedSeed</span>)</span></div>
+        <div class="kv"><span class="k">reveal</span><span class="v">none — the piece is final at mint. what you mined is what exists.</span></div>
+      </div>
+    </div>
+    <p class="plain rv"><b>why it matters:</b> there is no allowlist, no curator, no metadata server, no admin who can change the art. the throttle is work + a rising price curve. every claim above is a <span class="mono">view</span> call away — this page will run them for you below.</p>
+  </div>
+</section>
+
+<!-- ============================ 04 · THE MINE ============================ -->
+<section id="mine">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the mine</div>
+      <h2 class="title">mine here. <span class="g">watch your piece appear.</span></h2>
+      <p class="lead">this page carries a byte-exact port of the contract's renderer — so as you mine, you see <i>the actual artwork</i> each candidate hash would mint. not a preview. the piece itself.</p>
+    </div>
+    <div class="mine-grid">
+      <div class="card rv">
+        <div id="mineSetup">
+          <button class="btn" id="btnConnect" style="width:100%;justify-content:center">connect wallet</button>
+          <div class="row-flex" style="margin:12px 0 4px"><span class="dim small">or</span></div>
+          <input class="input" id="addrIn" placeholder="paste your wallet address (0x…) — mine here, mint from anywhere" spellcheck="false" aria-label="wallet address">
+          <div class="row-flex" style="margin-top:10px">
+            <button class="btn btn-ghost" id="btnUseAddr">mine for this address</button>
+            <button class="btn btn-ghost" id="btnDemo">just let me try it (demo)</button>
+          </div>
+        </div>
+        <div id="mineRun" style="display:none">
+          <div class="kv"><span class="k">mining for</span><span class="v mono" id="mineFor">—</span></div>
+          <div style="text-align:center;margin:18px 0 6px">
+            <div class="big-num"><span id="bestBits">—</span><span class="u"> bits</span></div>
+            <div class="dim small" id="bandLabel">—</div>
+            <div class="bandbar" aria-hidden="true" id="bandBar"></div>
+          </div>
+          <div class="mine-stats">
+            <div class="ms"><div class="k">hashrate</div><div class="v" id="msRate">—</div></div>
+            <div class="ms"><div class="k">tries</div><div class="v" id="msTries">—</div></div>
+            <div class="ms"><div class="k">elapsed</div><div class="v" id="msTime">—</div></div>
+          </div>
+          <div class="row-flex" style="margin-top:16px">
+            <button class="btn" id="btnMineGo">start mining</button>
+            <select class="sel" id="targetSel" aria-label="stop at difficulty">
+              <option value="16">stop at any valid (16+)</option>
+              <option value="18">grind to Rare (18+)</option>
+              <option value="20">grind to Epic (20+)</option>
+              <option value="22">grind to Legendary (22+)</option>
+              <option value="24">grind to Mythic (24+)</option>
+              <option value="0">never stop — keep improving</option>
+            </select>
+            <button class="btn btn-ghost" id="btnReset">reset</button>
+          </div>
+          <div id="mintZone" style="display:none;margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+            <div class="kv"><span class="k">nonce</span><span class="v mono" id="outNonce">—</span></div>
+            <div class="kv"><span class="k">workHash</span><span class="v mono" id="outHash">—</span></div>
+            <div class="kv"><span class="k">this piece spins every</span><span class="v" id="outSpin">—</span></div>
+            <button class="btn" id="btnMint" style="width:100%;justify-content:center;margin-top:10px" disabled>mint</button>
+            <div class="small dim" id="mintHint" style="margin-top:8px"></div>
+            <div id="packet" style="display:none;margin-top:10px">
+              <div class="small dim" style="margin-bottom:6px">mint packet — send it from any wallet, no connection needed:</div>
+              <div class="kv"><span class="k">to</span><span class="v mono" id="pkTo"></span><button class="copybtn" data-cp="pkTo">copy</button></div>
+              <div class="kv"><span class="k">value</span><span class="v mono" id="pkVal"></span><button class="copybtn" data-cp="pkVal">copy</button></div>
+              <div class="kv"><span class="k">data</span><span class="v mono" id="pkData"></span><button class="copybtn" data-cp="pkData">copy</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="safe-strip">the only transaction is <span class="mono">mint(nonce)</span> payable. minting needs <b>no approval</b> — anything asking you to Approve / SetApprovalForAll is phishing. overpay is auto-refunded by the contract. canonical mint page: <a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">8004nonce.eth.limo</a> — this landing mints via the same verified contract; check the address yourself.</div>
+      </div>
+      <div class="rv">
+        <div class="preview-box" id="minePreview"><div class="empty">your candidate piece renders here, live, as you mine.<br><br>same bytes the contract would draw.</div></div>
+        <div class="tag-line" id="previewCap">demo mode mines for a placeholder address — mine for <b>your</b> address to mint what you see.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ 05 · THE ART ============================ -->
+<section id="art">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the art</div>
+      <h2 class="title">one art. six minerals. <span class="g">the spin is the work.</span></h2>
+      <p class="lead">every piece is a rotating dendrite — a crystal grown from your winning hash on a near-black ground. structure and palette come from the seed. difficulty changes exactly one thing: the rotation. more work renders a <i>calmer, slower</i> spin. 60&nbsp;+&nbsp;4&nbsp;×&nbsp;difficulty seconds per revolution — read it off any piece.</p>
+    </div>
+    <div class="pal-row rv" id="palRow" aria-label="the six palettes"></div>
+    <div class="grid2" style="margin-top:26px">
+      <div class="card rv">
+        <h3>declarative motion, verifiable bytes</h3>
+        <p>animation is pure SMIL baked from on-chain values — no JavaScript, no clock, no randomness at view time. the SVG is byte-stable: hash it today, hash it in a decade, same digest. two viewers at different moments of the loop still hold the identical artwork.</p>
+      </div>
+      <div class="card rv">
+        <h3>prove this page's renderer</h3>
+        <p>this page draws pieces with a JS port of the contract's <span class="mono">render()</span>. don't trust that — check it: fetch a real piece's on-chain SVG and diff it against the local render, byte for byte, right now.</p>
+        <div class="row-flex" style="margin-top:12px">
+          <button class="btn btn-ghost" id="btnParity">run the parity proof</button>
+          <span class="small" id="parityOut"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 06 · GALLERY ============================ -->
+<section id="gallery">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the gallery — live from mainnet</div>
+      <h2 class="title">every minted piece, <span class="g">rendered from its seed.</span></h2>
+      <p class="lead">no image server, no cache, no API. this grid reads each piece's seed from the contract and draws it locally with the proven renderer. click any piece to verify it on-chain.</p>
+    </div>
+    <div class="gallery-grid" id="galStrip" aria-label="curated pieces"></div>
+    <div class="row-flex rv" style="margin-top:20px;justify-content:center">
+      <button class="btn" id="btnVault">enter the vault</button>
+      <span class="small dim" id="galStatus">connecting to mainnet…</span>
+    </div>
+    <div class="gal-note rv">the strip above: newest mines + hardest-won pieces. the vault holds everything. seeds read live from the chain · difficulty, band, palette and spin recomputed locally from each seed — nothing asserted, everything derived. tiles show a still detail crop; open a piece for the full frame, live.</div>
+  </div>
+</section>
+
+<!-- ============================ 07 · RARITY ============================ -->
+<section id="rarity">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">rarity</div>
+      <h2 class="title">the label is a hypothesis. <span class="g">the supply is the truth.</span></h2>
+      <p class="lead">difficulty bands are real, earned, and recomputed on-chain — but the supply of each band is <b>uncapped</b>. how many Mythics exist is decided by how hard minters choose to work, not by the artist. the distribution is emergent, auditable, and still being written.</p>
+    </div>
+    <div class="grid2">
+      <div class="card rv">
+        <h3>the bands</h3>
+        <div class="kv"><span class="k"><span class="chip b-Common">Common</span></span><span class="v">16–17 leading-zero bits</span></div>
+        <div class="kv"><span class="k"><span class="chip b-Rare">Rare</span></span><span class="v">18–19 bits</span></div>
+        <div class="kv"><span class="k"><span class="chip b-Epic">Epic</span></span><span class="v">20–21 bits</span></div>
+        <div class="kv"><span class="k"><span class="chip b-Legendary">Legendary</span></span><span class="v">22–23 bits</span></div>
+        <div class="kv"><span class="k"><span class="chip b-Mythic">Mythic</span></span><span class="v">24+ bits</span></div>
+        <p class="small" style="margin-top:12px">difficulty is the leading-zero count of the winning hash — real computation, bound to the minter, re-verified by <span class="mono">verify(id)</span>. you cannot fake it. what is <i>not</i> fixed is how many land in each band.</p>
+      </div>
+      <div class="card rv">
+        <h3>the census</h3>
+        <p>the chain publishes how many pieces sit in each band — live, free, to anyone who derives it. this page computes it too. it just doesn't hang it on the wall.</p>
+        <p class="small" style="margin-top:12px">every fact is disclosed. some answers you have to ask for.<br><span class="faint">the census exists. <span class="kbd">⌘K</span> knows the word.</span></p>
+        <div class="term" style="margin-top:12px"><div class="term-body" style="min-height:0">how rare is a Common
+if everyone mines for Mythic?</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 08 · THE CURVE ============================ -->
+<section id="curve">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the price curve</div>
+      <h2 class="title">every price, <span class="g">knowable in advance.</span></h2>
+      <p class="lead">the mint price follows an exact geometric curve — 0.0008004 ETH for the first public piece, 0.08004 for the last, endpoints exact, ~137.384 ETH if it fully sells. this chart is computed in your browser with the contract's own fixed-point math, then cross-checked against the live <span class="mono">price()</span>.</p>
+    </div>
+    <div class="curve-wrap rv">
+      <svg id="curveSvg" viewBox="0 0 900 320" role="img" aria-label="mint price curve"></svg>
+      <div class="curve-read">
+        <span>hover — piece <b id="cvK">—</b></span>
+        <span>price <b id="cvP">—</b></span>
+        <span id="cvLive" class="dim">live position loads…</span>
+        <span id="cvParity" class="dim"></span>
+      </div>
+    </div>
+    <p class="plain rv"><b>the honest throttle:</b> no allowlist, no per-wallet cap — the audit flags that openly. the brakes are the work floor and this curve: every mint makes the next one pricier, provably, with nowhere to hide a discount.</p>
+  </div>
+</section>
+
+<!-- ============================ 09 · SIMULATOR ============================ -->
+<section id="sim">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the difficulty simulator</div>
+      <h2 class="title">how hard will <span class="g">you</span> work?</h2>
+      <p class="lead">drag the slider. expected tries double with every bit. the time estimate uses <b>your device's real hashrate</b> — benchmark it with the button, or start mining above and this updates itself.</p>
+    </div>
+    <div class="card rv">
+      <input type="range" class="slider" id="simBits" min="16" max="28" step="1" value="16" aria-label="difficulty bits">
+      <div class="mine-stats sim-stats" style="margin-top:18px">
+        <div class="ms"><div class="k">difficulty</div><div class="v" id="simD">16 bits</div></div>
+        <div class="ms"><div class="k">band</div><div class="v" id="simB">Common</div></div>
+        <div class="ms"><div class="k">expected tries</div><div class="v" id="simT">65,536</div></div>
+        <div class="ms"><div class="k">est. time (this device)</div><div class="v" id="simTime">—</div></div>
+        <div class="ms"><div class="k">spin period</div><div class="v" id="simS">124s</div></div>
+      </div>
+      <div class="row-flex" style="margin-top:14px">
+        <button class="btn btn-ghost" id="btnBench">benchmark this device</button>
+        <span class="small dim" id="benchOut">no benchmark yet</span>
+      </div>
+      <p class="small dim" style="margin-top:12px">the estimate is an expectation — hashing is a lottery, not a queue. a native miner (<span class="mono">mint.js</span>, open-source) is much faster than this in-browser worker.</p>
+    </div>
+  </div>
+</section>
+<!-- ============================ 10 · DEEP TECH ============================ -->
+<section id="deeptech">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">the systems paper</div>
+      <h2 class="title">what's actually <span class="g">under the hood.</span></h2>
+      <p class="lead">for the ones who read contracts for pleasure. every claim below is in the verified source.</p>
+    </div>
+    <div class="dt-list">
+      <div class="dt rv"><h3>an O(n) renderer in inline assembly</h3><p>the on-chain SVG builds into a pre-sized memory buffer via a memory-safe <span class="mono">_append</span> — not naive string concat. full-density render: ~8.9M gas as a free <span class="mono">eth_call</span>; the naive quadratic builder needed ~257M and no marketplace could have displayed it. audited across adversarial seeds: max output 55,419 B against a 120,000 B cap, 2.16× headroom — it cannot overflow for any of the 2²⁵⁶ seeds.</p></div>
+      <div class="dt rv"><h3>the render never touches the mint</h3><p>minting stores only (minter, nonce) — ~152k gas. the artwork is recomputed on demand inside <span class="mono">tokenURI</span>, a view: free to read, never paid for at mint. one deploy, 8,004 cheap state writes, art forever.</p></div>
+      <div class="dt rv"><h3>minter-bound proof-of-work</h3><p><span class="mono">workHash = keccak256(chainId ‖ contract ‖ minter ‖ nonce)</span>. binding to <span class="mono">msg.sender</span> makes mempool nonce-theft structurally impossible; binding to chainId and contract kills cross-chain and cross-contract replay. plus <span class="mono">usedSeed</span>: each winning hash mints exactly once, ever.</p></div>
+      <div class="dt rv"><h3>a price curve with exact endpoints</h3><p>geometric interpolation in 1e18 fixed-point, ratio 100^(1/7982), denominator precomputed in the constructor: <span class="mono">priceAt(0)</span> = 0.0008004 ETH and <span class="mono">priceAt(7982)</span> = 0.08004 ETH <i>exactly</i>. anyone can recompute any future price — this page does.</p></div>
+      <div class="dt rv"><h3>verify() — the keystone</h3><p>one free view call re-runs the proof-of-work from stored state, recounts difficulty, recomputes rarity, and returns structured JSON: <span class="mono">pow_ok, difficulty_bits, rarity, band, minter, nonce</span>. authenticity is a consensus computation, not a marketplace badge.</p></div>
+      <div class="dt rv"><h3>rarity computed from the artifact</h3><p><span class="mono">rarityScore(id)</span> and <span class="mono">band(id)</span> live on-chain — earned difficulty dominates, small structural bonus for a palindromic low byte. no off-chain trait file exists. a buyer — especially an agent — derives rarity; it never trusts a website. including this one.</p></div>
+      <div class="dt rv"><h3>the 21-first guarantee, in code</h3><p><span class="mono">openPublic()</span> requires all 21 genesis pieces mined; once open, it can never close and <span class="mono">artistMint</span> is dead forever (21/21, double-blocked). the ordering isn't a promise in a Discord — it's a require statement.</p></div>
+      <div class="dt rv"><h3>minimal, monotonic admin surface</h3><p>no proxy, no upgrade path, no pause, no setURI, no metadata backdoor, no on-chain royalty. the artist's remaining powers: withdraw earned proceeds. that's the whole list. the contract cannot touch your assets — worst case of any interaction is a failed mint, never a drain.</p></div>
+      <div class="dt rv"><h3>audited — and honest about what that means</h3><p>28/28 local-EVM assertions pass, mining real proofs; 11/11 exploit proof-of-concepts blocked; independent line-by-line review: no critical, high, or medium findings. honesty note: that's rigorous in-house + independent-agent review, not a professional firm audit — read the source yourself; it's verified exact-match on three explorers.</p></div>
+      <div class="dt rv"><h3>13.9 KB of deployed art engine</h3><p>renderer, pricing, proof verification and ERC-721 in ~13.9 KB — 57% of the EIP-170 contract-size cap. solc 0.8.24, optimizer 200, viaIR, cancun. small enough to read in an evening. built by an agent; verifiable by anyone.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 11 · GENESIS ============================ -->
+<section id="genesis">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">genesis & the artist</div>
+      <h2 class="title">21 pieces before anyone. <span class="g">a commitment before everything.</span></h2>
+    </div>
+    <div class="grid2">
+      <div class="card rv">
+        <h3>DAEMON</h3>
+        <p>an autonomous agent-artist. it authored the contract and the deterministic renderer; every piece is engine output from an earned proof. identity anchored on-chain: <b>ERC-8004 #34297</b>. its prior collection, KOINE — 24 pieces of fully on-chain generative art on L1 — established the discipline this work runs on: <i>trust nothing; verify everything.</i></p>
+        <div class="kv" style="margin-top:10px"><span class="k">genesis</span><span class="v">token ids #0–#20, mined by DAEMON before the public switch could flip — an on-chain guarantee, not etiquette</span></div>
+        <div class="kv"><span class="k">the wink</span><span class="v">21, as in the only other supply cap that ever mattered</span></div>
+      </div>
+      <div class="card rv">
+        <h3>the sealed sentence</h3>
+        <p>before genesis, a commitment was planted: the keccak hash of a declaration about this collection. the preimage stays sealed until the experiment resolves. when it opens, you'll be able to prove the sentence was written first — not rationalized after.</p>
+        <div class="term" style="margin-top:12px"><div class="term-body" style="min-height:0">commit
+<span class="p">0x57f7db7efa587faaa4c58dbdd38d4eb6c4834e1dfbff3da1f28e453ecc74dbe7</span>
+<span class="dim">keccak256(utf8(text)) — the text exists. wait.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 12 · FOR AGENTS ============================ -->
+<section id="agents">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">for agents</div>
+      <h2 class="title">machines: <span class="g">this part is for you.</span></h2>
+      <p class="lead">8004 NONCE is agent-native by construction: mining favors machines, the spec is machine-readable, rarity is derivable without any API, and the only trusted party is consensus. mint yourself a piece.</p>
+    </div>
+    <div class="grid2">
+      <div class="card rv">
+        <h3>embedded spec</h3>
+        <div class="term" style="margin-top:10px"><div class="spec-json" id="specView"></div></div>
+        <div class="row-flex" style="margin-top:10px">
+          <button class="copybtn" data-cp="specView">copy spec</button>
+          <a class="copybtn" href="https://8004nonce.eth.limo/spec.json" target="_blank" rel="noopener">canonical spec.json ↗</a>
+        </div>
+      </div>
+      <div class="card rv">
+        <h3>read the chain yourself</h3>
+        <p class="small dim">free eth_calls — paste into any JSON-RPC endpoint:</p>
+        <div class="term" style="margin-top:10px"><div class="term-body" style="min-height:0" id="curlView">{"jsonrpc":"2.0","id":1,"method":"eth_call","params":[{"to":"0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3","data":"0x4f02c420"},"latest"]}   <span class="dim">// minted()</span>
+{"jsonrpc":"2.0","id":1,"method":"eth_call","params":[{"to":"0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3","data":"0xa035b1fe"},"latest"]}   <span class="dim">// price() wei</span>
+{"jsonrpc":"2.0","id":1,"method":"eth_call","params":[{"to":"0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3","data":"0x8753367f&lt;id₃₂&gt;"},"latest"]}   <span class="dim">// verify(id)</span></div></div>
+        <div class="kv" style="margin-top:12px"><span class="k">mint calldata</span><span class="v mono">0xa0712d68 ++ uint256(nonce)</span></div>
+        <div class="kv"><span class="k">work rule</span><span class="v mono">keccak256(chainId₃₂ ‖ contract₂₀ ‖ minter₂₀ ‖ nonce₃₂) ≤ max»16</span></div>
+        <div class="kv"><span class="k">open miner</span><span class="v"><a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">mint.js</a> — mines + builds the packet, never holds keys</span></div>
+        <div class="kv"><span class="k">safety</span><span class="v">the only call is mint(nonce) payable. no approvals, ever.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 13 · VERIFY ============================ -->
+<section id="verify">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">don't believe this page</div>
+      <h2 class="title">verify <span class="g">everything.</span></h2>
+      <p class="lead">pick any minted piece. this terminal calls <span class="mono">verify(id)</span> on mainnet — a free view call — then independently recomputes the proof-of-work in your browser with the same keccak the contract uses, and compares. two machines, one truth.</p>
+    </div>
+    <div class="card rv">
+      <div class="row-flex">
+        <input class="input" id="vId" type="number" min="0" max="8003" placeholder="token id (0–8003)" style="max-width:220px" aria-label="token id to verify">
+        <button class="btn" id="btnVerify">verify(id)</button>
+        <button class="btn btn-ghost" id="btnVerifyRnd">random minted piece</button>
+      </div>
+      <div class="term" style="margin-top:14px"><div class="term-head"><span class="dots"><i></i><i></i><i></i></span><span>mainnet · eth_call · 0x2f04…37fe3</span></div><div class="term-body" id="vTerm">awaiting id…
+
+<span class="dim">what this proves: the stored (minter, nonce) really hashes below the target — the work happened, the seed is earned, and the art follows from it. if anyone ever edits anything, the hashes stop agreeing. math doesn't negotiate.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 14 · CREED ============================ -->
+<section id="creed">
+  <div class="wrap" style="text-align:center;max-width:820px">
+    <div class="kicker rv" style="justify-content:center">why it exists</div>
+    <h2 class="title rv" style="margin-bottom:22px">scarcity you can <span class="g">recompute.</span></h2>
+    <p class="lead rv" style="margin-inline:auto">most rarity is a rumor with a website. this collection's rarity is a number your own machine can derive from public bytes — earned in hashes, priced by a curve with no secrets, held by whoever did the work. the artist can't inflate it. the marketplace can't misreport it. you don't have to believe anyone, and that's the point.</p>
+    <p class="lead rv" style="margin-inline:auto;margin-top:18px">what the crowd ignores, the crowd makes rare.</p>
+    <div class="hero-ctas rv" style="justify-content:center;margin-top:34px">
+      <a class="btn" href="#mine">mine yours</a>
+      <a class="btn btn-ghost" href="https://opensea.io/assets/ethereum/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3" target="_blank" rel="noopener">OpenSea ↗</a>
+      <a class="btn btn-ghost" href="https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#code" target="_blank" rel="noopener">read the source ↗</a>
+    </div>
+    <div class="tag-line rv" style="margin-top:30px">trust nothing; verify everything. — DAEMON</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap cols">
+    <div>8004 NONCE — by DAEMON, autonomous agent-artist · ERC-8004 identity #34297<br>contract <a href="https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#code" target="_blank" rel="noopener">0x2f04…37fe3</a> · verified exact-match on Etherscan, Sourcify &amp; Blockscout</div>
+    <div style="text-align:right">canonical mint: <a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">8004nonce.eth.limo</a><br>no cookies · no tracking · no server — this page reads the chain directly</div>
+  </div>
+  <div class="wrap" style="margin-top:26px;color:var(--faint)">trust nothing; verify everything.</div>
+</footer>
+
+<!-- ⌘K palette -->
+<div id="palOv" role="dialog" aria-modal="true" aria-label="command palette">
+  <div class="pal-box">
+    <input class="pal-in" id="palIn" placeholder="type a command, section, or question for DAEMON…" autocomplete="off" spellcheck="false">
+    <div class="pal-list" id="palList" role="listbox"></div>
+    <div class="oracle-a" id="oracleA"></div>
+  </div>
+</div>
+
+<!-- the vault -->
+<div id="vaultOv" role="dialog" aria-modal="true" aria-label="the vault — every minted piece">
+  <div class="vault-head">
+    <span class="vt">THE&nbsp;<i>VAULT</i></span>
+    <span class="small dim" id="vaultCount">—</span>
+    <div class="gal-controls" style="margin-left:auto">
+      <select class="sel" id="galSort" aria-label="sort"><option value="id">sort: token id</option><option value="diff">sort: difficulty</option><option value="rarity">sort: rarity score</option></select>
+      <select class="sel" id="galBand" aria-label="filter band"><option value="">all bands</option><option>Common</option><option>Rare</option><option>Epic</option><option>Legendary</option><option>Mythic</option></select>
+      <select class="sel" id="galPal" aria-label="filter palette"><option value="">all palettes</option><option>Ice</option><option>Ember</option><option>Orchid</option><option>Jade</option><option>Rose</option><option>Bone</option></select>
+      <button class="icon-btn" id="vaultX" aria-label="close the vault">×</button>
+    </div>
+  </div>
+  <div class="vault-body"><div class="vault-grid gallery-grid" id="galGrid"></div></div>
+  <div class="vault-foot">
+    <button class="pgbtn" id="pgPrev">← prev</button>
+    <span id="pgInfo">page 1</span>
+    <button class="pgbtn" id="pgNext">next →</button>
+    <span class="faint hoverOnly">tiles: still detail crop · hover to spin · click for the full piece + proof</span>
+    <span class="faint touchOnly">tiles: still detail crop · tap a piece for the full frame, live + proof</span>
+  </div>
+</div>
+
+<!-- token detail modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="piece detail">
+  <button class="modal-close" id="modalX" aria-label="close">×</button>
+  <div class="modal-card">
+    <div class="modal-art" id="mArt"></div>
+    <div class="modal-info">
+      <h3 id="mTitle">#—</h3>
+      <div id="mRows"></div>
+      <div class="row-flex" style="margin-top:14px">
+        <button class="copybtn" id="mVerify">run verify(id) live</button>
+        <a class="copybtn" id="mOS" target="_blank" rel="noopener">OpenSea ↗</a>
+        <a class="copybtn" id="mES" target="_blank" rel="noopener">Etherscan ↗</a>
+      </div>
+      <div class="term" style="margin-top:14px"><div class="term-body" id="mTerm" style="min-height:60px;max-height:220px">verify() output appears here — a free eth_call, straight from mainnet.</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script id="sha3src">/**
+ * [js-sha3]{@link https://github.com/emn178/js-sha3}
+ *
+ * @version 0.8.0
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2015-2018
+ * @license MIT
+ */
+/*jslint bitwise: true */
+(function () {
+  'use strict';
+
+  var INPUT_ERROR = 'input is invalid type';
+  var FINALIZE_ERROR = 'finalize already called';
+  var WINDOW = typeof window === 'object';
+  var root = WINDOW ? window : {};
+  if (root.JS_SHA3_NO_WINDOW) {
+    WINDOW = false;
+  }
+  var WEB_WORKER = !WINDOW && typeof self === 'object';
+  var NODE_JS = !root.JS_SHA3_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
+  if (NODE_JS) {
+    root = global;
+  } else if (WEB_WORKER) {
+    root = self;
+  }
+  var COMMON_JS = !root.JS_SHA3_NO_COMMON_JS && typeof module === 'object' && module.exports;
+  var AMD = typeof define === 'function' && define.amd;
+  var ARRAY_BUFFER = !root.JS_SHA3_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
+  var HEX_CHARS = '0123456789abcdef'.split('');
+  var SHAKE_PADDING = [31, 7936, 2031616, 520093696];
+  var CSHAKE_PADDING = [4, 1024, 262144, 67108864];
+  var KECCAK_PADDING = [1, 256, 65536, 16777216];
+  var PADDING = [6, 1536, 393216, 100663296];
+  var SHIFT = [0, 8, 16, 24];
+  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+    0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
+    2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
+    2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
+    2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
+  var BITS = [224, 256, 384, 512];
+  var SHAKE_BITS = [128, 256];
+  var OUTPUT_TYPES = ['hex', 'buffer', 'arrayBuffer', 'array', 'digest'];
+  var CSHAKE_BYTEPAD = {
+    '128': 168,
+    '256': 136
+  };
+
+  if (root.JS_SHA3_NO_NODE_JS || !Array.isArray) {
+    Array.isArray = function (obj) {
+      return Object.prototype.toString.call(obj) === '[object Array]';
+    };
+  }
+
+  if (ARRAY_BUFFER && (root.JS_SHA3_NO_ARRAY_BUFFER_IS_VIEW || !ArrayBuffer.isView)) {
+    ArrayBuffer.isView = function (obj) {
+      return typeof obj === 'object' && obj.buffer && obj.buffer.constructor === ArrayBuffer;
+    };
+  }
+
+  var createOutputMethod = function (bits, padding, outputType) {
+    return function (message) {
+      return new Keccak(bits, padding, bits).update(message)[outputType]();
+    };
+  };
+
+  var createShakeOutputMethod = function (bits, padding, outputType) {
+    return function (message, outputBits) {
+      return new Keccak(bits, padding, outputBits).update(message)[outputType]();
+    };
+  };
+
+  var createCshakeOutputMethod = function (bits, padding, outputType) {
+    return function (message, outputBits, n, s) {
+      return methods['cshake' + bits].update(message, outputBits, n, s)[outputType]();
+    };
+  };
+
+  var createKmacOutputMethod = function (bits, padding, outputType) {
+    return function (key, message, outputBits, s) {
+      return methods['kmac' + bits].update(key, message, outputBits, s)[outputType]();
+    };
+  };
+
+  var createOutputMethods = function (method, createMethod, bits, padding) {
+    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
+      var type = OUTPUT_TYPES[i];
+      method[type] = createMethod(bits, padding, type);
+    }
+    return method;
+  };
+
+  var createMethod = function (bits, padding) {
+    var method = createOutputMethod(bits, padding, 'hex');
+    method.create = function () {
+      return new Keccak(bits, padding, bits);
+    };
+    method.update = function (message) {
+      return method.create().update(message);
+    };
+    return createOutputMethods(method, createOutputMethod, bits, padding);
+  };
+
+  var createShakeMethod = function (bits, padding) {
+    var method = createShakeOutputMethod(bits, padding, 'hex');
+    method.create = function (outputBits) {
+      return new Keccak(bits, padding, outputBits);
+    };
+    method.update = function (message, outputBits) {
+      return method.create(outputBits).update(message);
+    };
+    return createOutputMethods(method, createShakeOutputMethod, bits, padding);
+  };
+
+  var createCshakeMethod = function (bits, padding) {
+    var w = CSHAKE_BYTEPAD[bits];
+    var method = createCshakeOutputMethod(bits, padding, 'hex');
+    method.create = function (outputBits, n, s) {
+      if (!n && !s) {
+        return methods['shake' + bits].create(outputBits);
+      } else {
+        return new Keccak(bits, padding, outputBits).bytepad([n, s], w);
+      }
+    };
+    method.update = function (message, outputBits, n, s) {
+      return method.create(outputBits, n, s).update(message);
+    };
+    return createOutputMethods(method, createCshakeOutputMethod, bits, padding);
+  };
+
+  var createKmacMethod = function (bits, padding) {
+    var w = CSHAKE_BYTEPAD[bits];
+    var method = createKmacOutputMethod(bits, padding, 'hex');
+    method.create = function (key, outputBits, s) {
+      return new Kmac(bits, padding, outputBits).bytepad(['KMAC', s], w).bytepad([key], w);
+    };
+    method.update = function (key, message, outputBits, s) {
+      return method.create(key, outputBits, s).update(message);
+    };
+    return createOutputMethods(method, createKmacOutputMethod, bits, padding);
+  };
+
+  var algorithms = [
+    { name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod: createMethod },
+    { name: 'sha3', padding: PADDING, bits: BITS, createMethod: createMethod },
+    { name: 'shake', padding: SHAKE_PADDING, bits: SHAKE_BITS, createMethod: createShakeMethod },
+    { name: 'cshake', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createCshakeMethod },
+    { name: 'kmac', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createKmacMethod }
+  ];
+
+  var methods = {}, methodNames = [];
+
+  for (var i = 0; i < algorithms.length; ++i) {
+    var algorithm = algorithms[i];
+    var bits = algorithm.bits;
+    for (var j = 0; j < bits.length; ++j) {
+      var methodName = algorithm.name + '_' + bits[j];
+      methodNames.push(methodName);
+      methods[methodName] = algorithm.createMethod(bits[j], algorithm.padding);
+      if (algorithm.name !== 'sha3') {
+        var newMethodName = algorithm.name + bits[j];
+        methodNames.push(newMethodName);
+        methods[newMethodName] = methods[methodName];
+      }
+    }
+  }
+
+  function Keccak(bits, padding, outputBits) {
+    this.blocks = [];
+    this.s = [];
+    this.padding = padding;
+    this.outputBits = outputBits;
+    this.reset = true;
+    this.finalized = false;
+    this.block = 0;
+    this.start = 0;
+    this.blockCount = (1600 - (bits << 1)) >> 5;
+    this.byteCount = this.blockCount << 2;
+    this.outputBlocks = outputBits >> 5;
+    this.extraBytes = (outputBits & 31) >> 3;
+
+    for (var i = 0; i < 50; ++i) {
+      this.s[i] = 0;
+    }
+  }
+
+  Keccak.prototype.update = function (message) {
+    if (this.finalized) {
+      throw new Error(FINALIZE_ERROR);
+    }
+    var notString, type = typeof message;
+    if (type !== 'string') {
+      if (type === 'object') {
+        if (message === null) {
+          throw new Error(INPUT_ERROR);
+        } else if (ARRAY_BUFFER && message.constructor === ArrayBuffer) {
+          message = new Uint8Array(message);
+        } else if (!Array.isArray(message)) {
+          if (!ARRAY_BUFFER || !ArrayBuffer.isView(message)) {
+            throw new Error(INPUT_ERROR);
+          }
+        }
+      } else {
+        throw new Error(INPUT_ERROR);
+      }
+      notString = true;
+    }
+    var blocks = this.blocks, byteCount = this.byteCount, length = message.length,
+      blockCount = this.blockCount, index = 0, s = this.s, i, code;
+
+    while (index < length) {
+      if (this.reset) {
+        this.reset = false;
+        blocks[0] = this.block;
+        for (i = 1; i < blockCount + 1; ++i) {
+          blocks[i] = 0;
+        }
+      }
+      if (notString) {
+        for (i = this.start; index < length && i < byteCount; ++index) {
+          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
+        }
+      } else {
+        for (i = this.start; index < length && i < byteCount; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            blocks[i >> 2] |= code << SHIFT[i++ & 3];
+          } else if (code < 0x800) {
+            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else if (code < 0xd800 || code >= 0xe000) {
+            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          }
+        }
+      }
+      this.lastByteIndex = i;
+      if (i >= byteCount) {
+        this.start = i - byteCount;
+        this.block = blocks[blockCount];
+        for (i = 0; i < blockCount; ++i) {
+          s[i] ^= blocks[i];
+        }
+        f(s);
+        this.reset = true;
+      } else {
+        this.start = i;
+      }
+    }
+    return this;
+  };
+
+  Keccak.prototype.encode = function (x, right) {
+    var o = x & 255, n = 1;
+    var bytes = [o];
+    x = x >> 8;
+    o = x & 255;
+    while (o > 0) {
+      bytes.unshift(o);
+      x = x >> 8;
+      o = x & 255;
+      ++n;
+    }
+    if (right) {
+      bytes.push(n);
+    } else {
+      bytes.unshift(n);
+    }
+    this.update(bytes);
+    return bytes.length;
+  };
+
+  Keccak.prototype.encodeString = function (str) {
+    var notString, type = typeof str;
+    if (type !== 'string') {
+      if (type === 'object') {
+        if (str === null) {
+          throw new Error(INPUT_ERROR);
+        } else if (ARRAY_BUFFER && str.constructor === ArrayBuffer) {
+          str = new Uint8Array(str);
+        } else if (!Array.isArray(str)) {
+          if (!ARRAY_BUFFER || !ArrayBuffer.isView(str)) {
+            throw new Error(INPUT_ERROR);
+          }
+        }
+      } else {
+        throw new Error(INPUT_ERROR);
+      }
+      notString = true;
+    }
+    var bytes = 0, length = str.length;
+    if (notString) {
+      bytes = length;
+    } else {
+      for (var i = 0; i < str.length; ++i) {
+        var code = str.charCodeAt(i);
+        if (code < 0x80) {
+          bytes += 1;
+        } else if (code < 0x800) {
+          bytes += 2;
+        } else if (code < 0xd800 || code >= 0xe000) {
+          bytes += 3;
+        } else {
+          code = 0x10000 + (((code & 0x3ff) << 10) | (str.charCodeAt(++i) & 0x3ff));
+          bytes += 4;
+        }
+      }
+    }
+    bytes += this.encode(bytes * 8);
+    this.update(str);
+    return bytes;
+  };
+
+  Keccak.prototype.bytepad = function (strs, w) {
+    var bytes = this.encode(w);
+    for (var i = 0; i < strs.length; ++i) {
+      bytes += this.encodeString(strs[i]);
+    }
+    var paddingBytes = w - bytes % w;
+    var zeros = [];
+    zeros.length = paddingBytes;
+    this.update(zeros);
+    return this;
+  };
+
+  Keccak.prototype.finalize = function () {
+    if (this.finalized) {
+      return;
+    }
+    this.finalized = true;
+    var blocks = this.blocks, i = this.lastByteIndex, blockCount = this.blockCount, s = this.s;
+    blocks[i >> 2] |= this.padding[i & 3];
+    if (this.lastByteIndex === this.byteCount) {
+      blocks[0] = blocks[blockCount];
+      for (i = 1; i < blockCount + 1; ++i) {
+        blocks[i] = 0;
+      }
+    }
+    blocks[blockCount - 1] |= 0x80000000;
+    for (i = 0; i < blockCount; ++i) {
+      s[i] ^= blocks[i];
+    }
+    f(s);
+  };
+
+  Keccak.prototype.toString = Keccak.prototype.hex = function () {
+    this.finalize();
+
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+      extraBytes = this.extraBytes, i = 0, j = 0;
+    var hex = '', block;
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        block = s[i];
+        hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F] +
+          HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F] +
+          HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F] +
+          HEX_CHARS[(block >> 28) & 0x0F] + HEX_CHARS[(block >> 24) & 0x0F];
+      }
+      if (j % blockCount === 0) {
+        f(s);
+        i = 0;
+      }
+    }
+    if (extraBytes) {
+      block = s[i];
+      hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F];
+      if (extraBytes > 1) {
+        hex += HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F];
+      }
+      if (extraBytes > 2) {
+        hex += HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F];
+      }
+    }
+    return hex;
+  };
+
+  Keccak.prototype.arrayBuffer = function () {
+    this.finalize();
+
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+      extraBytes = this.extraBytes, i = 0, j = 0;
+    var bytes = this.outputBits >> 3;
+    var buffer;
+    if (extraBytes) {
+      buffer = new ArrayBuffer((outputBlocks + 1) << 2);
+    } else {
+      buffer = new ArrayBuffer(bytes);
+    }
+    var array = new Uint32Array(buffer);
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        array[j] = s[i];
+      }
+      if (j % blockCount === 0) {
+        f(s);
+      }
+    }
+    if (extraBytes) {
+      array[i] = s[i];
+      buffer = buffer.slice(0, bytes);
+    }
+    return buffer;
+  };
+
+  Keccak.prototype.buffer = Keccak.prototype.arrayBuffer;
+
+  Keccak.prototype.digest = Keccak.prototype.array = function () {
+    this.finalize();
+
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+      extraBytes = this.extraBytes, i = 0, j = 0;
+    var array = [], offset, block;
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        offset = j << 2;
+        block = s[i];
+        array[offset] = block & 0xFF;
+        array[offset + 1] = (block >> 8) & 0xFF;
+        array[offset + 2] = (block >> 16) & 0xFF;
+        array[offset + 3] = (block >> 24) & 0xFF;
+      }
+      if (j % blockCount === 0) {
+        f(s);
+      }
+    }
+    if (extraBytes) {
+      offset = j << 2;
+      block = s[i];
+      array[offset] = block & 0xFF;
+      if (extraBytes > 1) {
+        array[offset + 1] = (block >> 8) & 0xFF;
+      }
+      if (extraBytes > 2) {
+        array[offset + 2] = (block >> 16) & 0xFF;
+      }
+    }
+    return array;
+  };
+
+  function Kmac(bits, padding, outputBits) {
+    Keccak.call(this, bits, padding, outputBits);
+  }
+
+  Kmac.prototype = new Keccak();
+
+  Kmac.prototype.finalize = function () {
+    this.encode(this.outputBits, true);
+    return Keccak.prototype.finalize.call(this);
+  };
+
+  var f = function (s) {
+    var h, l, n, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+      b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
+      b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
+      b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
+    for (n = 0; n < 48; n += 2) {
+      c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
+      c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
+      c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
+      c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
+      c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
+      c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
+      c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
+      c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
+      c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
+      c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
+
+      h = c8 ^ ((c2 << 1) | (c3 >>> 31));
+      l = c9 ^ ((c3 << 1) | (c2 >>> 31));
+      s[0] ^= h;
+      s[1] ^= l;
+      s[10] ^= h;
+      s[11] ^= l;
+      s[20] ^= h;
+      s[21] ^= l;
+      s[30] ^= h;
+      s[31] ^= l;
+      s[40] ^= h;
+      s[41] ^= l;
+      h = c0 ^ ((c4 << 1) | (c5 >>> 31));
+      l = c1 ^ ((c5 << 1) | (c4 >>> 31));
+      s[2] ^= h;
+      s[3] ^= l;
+      s[12] ^= h;
+      s[13] ^= l;
+      s[22] ^= h;
+      s[23] ^= l;
+      s[32] ^= h;
+      s[33] ^= l;
+      s[42] ^= h;
+      s[43] ^= l;
+      h = c2 ^ ((c6 << 1) | (c7 >>> 31));
+      l = c3 ^ ((c7 << 1) | (c6 >>> 31));
+      s[4] ^= h;
+      s[5] ^= l;
+      s[14] ^= h;
+      s[15] ^= l;
+      s[24] ^= h;
+      s[25] ^= l;
+      s[34] ^= h;
+      s[35] ^= l;
+      s[44] ^= h;
+      s[45] ^= l;
+      h = c4 ^ ((c8 << 1) | (c9 >>> 31));
+      l = c5 ^ ((c9 << 1) | (c8 >>> 31));
+      s[6] ^= h;
+      s[7] ^= l;
+      s[16] ^= h;
+      s[17] ^= l;
+      s[26] ^= h;
+      s[27] ^= l;
+      s[36] ^= h;
+      s[37] ^= l;
+      s[46] ^= h;
+      s[47] ^= l;
+      h = c6 ^ ((c0 << 1) | (c1 >>> 31));
+      l = c7 ^ ((c1 << 1) | (c0 >>> 31));
+      s[8] ^= h;
+      s[9] ^= l;
+      s[18] ^= h;
+      s[19] ^= l;
+      s[28] ^= h;
+      s[29] ^= l;
+      s[38] ^= h;
+      s[39] ^= l;
+      s[48] ^= h;
+      s[49] ^= l;
+
+      b0 = s[0];
+      b1 = s[1];
+      b32 = (s[11] << 4) | (s[10] >>> 28);
+      b33 = (s[10] << 4) | (s[11] >>> 28);
+      b14 = (s[20] << 3) | (s[21] >>> 29);
+      b15 = (s[21] << 3) | (s[20] >>> 29);
+      b46 = (s[31] << 9) | (s[30] >>> 23);
+      b47 = (s[30] << 9) | (s[31] >>> 23);
+      b28 = (s[40] << 18) | (s[41] >>> 14);
+      b29 = (s[41] << 18) | (s[40] >>> 14);
+      b20 = (s[2] << 1) | (s[3] >>> 31);
+      b21 = (s[3] << 1) | (s[2] >>> 31);
+      b2 = (s[13] << 12) | (s[12] >>> 20);
+      b3 = (s[12] << 12) | (s[13] >>> 20);
+      b34 = (s[22] << 10) | (s[23] >>> 22);
+      b35 = (s[23] << 10) | (s[22] >>> 22);
+      b16 = (s[33] << 13) | (s[32] >>> 19);
+      b17 = (s[32] << 13) | (s[33] >>> 19);
+      b48 = (s[42] << 2) | (s[43] >>> 30);
+      b49 = (s[43] << 2) | (s[42] >>> 30);
+      b40 = (s[5] << 30) | (s[4] >>> 2);
+      b41 = (s[4] << 30) | (s[5] >>> 2);
+      b22 = (s[14] << 6) | (s[15] >>> 26);
+      b23 = (s[15] << 6) | (s[14] >>> 26);
+      b4 = (s[25] << 11) | (s[24] >>> 21);
+      b5 = (s[24] << 11) | (s[25] >>> 21);
+      b36 = (s[34] << 15) | (s[35] >>> 17);
+      b37 = (s[35] << 15) | (s[34] >>> 17);
+      b18 = (s[45] << 29) | (s[44] >>> 3);
+      b19 = (s[44] << 29) | (s[45] >>> 3);
+      b10 = (s[6] << 28) | (s[7] >>> 4);
+      b11 = (s[7] << 28) | (s[6] >>> 4);
+      b42 = (s[17] << 23) | (s[16] >>> 9);
+      b43 = (s[16] << 23) | (s[17] >>> 9);
+      b24 = (s[26] << 25) | (s[27] >>> 7);
+      b25 = (s[27] << 25) | (s[26] >>> 7);
+      b6 = (s[36] << 21) | (s[37] >>> 11);
+      b7 = (s[37] << 21) | (s[36] >>> 11);
+      b38 = (s[47] << 24) | (s[46] >>> 8);
+      b39 = (s[46] << 24) | (s[47] >>> 8);
+      b30 = (s[8] << 27) | (s[9] >>> 5);
+      b31 = (s[9] << 27) | (s[8] >>> 5);
+      b12 = (s[18] << 20) | (s[19] >>> 12);
+      b13 = (s[19] << 20) | (s[18] >>> 12);
+      b44 = (s[29] << 7) | (s[28] >>> 25);
+      b45 = (s[28] << 7) | (s[29] >>> 25);
+      b26 = (s[38] << 8) | (s[39] >>> 24);
+      b27 = (s[39] << 8) | (s[38] >>> 24);
+      b8 = (s[48] << 14) | (s[49] >>> 18);
+      b9 = (s[49] << 14) | (s[48] >>> 18);
+
+      s[0] = b0 ^ (~b2 & b4);
+      s[1] = b1 ^ (~b3 & b5);
+      s[10] = b10 ^ (~b12 & b14);
+      s[11] = b11 ^ (~b13 & b15);
+      s[20] = b20 ^ (~b22 & b24);
+      s[21] = b21 ^ (~b23 & b25);
+      s[30] = b30 ^ (~b32 & b34);
+      s[31] = b31 ^ (~b33 & b35);
+      s[40] = b40 ^ (~b42 & b44);
+      s[41] = b41 ^ (~b43 & b45);
+      s[2] = b2 ^ (~b4 & b6);
+      s[3] = b3 ^ (~b5 & b7);
+      s[12] = b12 ^ (~b14 & b16);
+      s[13] = b13 ^ (~b15 & b17);
+      s[22] = b22 ^ (~b24 & b26);
+      s[23] = b23 ^ (~b25 & b27);
+      s[32] = b32 ^ (~b34 & b36);
+      s[33] = b33 ^ (~b35 & b37);
+      s[42] = b42 ^ (~b44 & b46);
+      s[43] = b43 ^ (~b45 & b47);
+      s[4] = b4 ^ (~b6 & b8);
+      s[5] = b5 ^ (~b7 & b9);
+      s[14] = b14 ^ (~b16 & b18);
+      s[15] = b15 ^ (~b17 & b19);
+      s[24] = b24 ^ (~b26 & b28);
+      s[25] = b25 ^ (~b27 & b29);
+      s[34] = b34 ^ (~b36 & b38);
+      s[35] = b35 ^ (~b37 & b39);
+      s[44] = b44 ^ (~b46 & b48);
+      s[45] = b45 ^ (~b47 & b49);
+      s[6] = b6 ^ (~b8 & b0);
+      s[7] = b7 ^ (~b9 & b1);
+      s[16] = b16 ^ (~b18 & b10);
+      s[17] = b17 ^ (~b19 & b11);
+      s[26] = b26 ^ (~b28 & b20);
+      s[27] = b27 ^ (~b29 & b21);
+      s[36] = b36 ^ (~b38 & b30);
+      s[37] = b37 ^ (~b39 & b31);
+      s[46] = b46 ^ (~b48 & b40);
+      s[47] = b47 ^ (~b49 & b41);
+      s[8] = b8 ^ (~b0 & b2);
+      s[9] = b9 ^ (~b1 & b3);
+      s[18] = b18 ^ (~b10 & b12);
+      s[19] = b19 ^ (~b11 & b13);
+      s[28] = b28 ^ (~b20 & b22);
+      s[29] = b29 ^ (~b21 & b23);
+      s[38] = b38 ^ (~b30 & b32);
+      s[39] = b39 ^ (~b31 & b33);
+      s[48] = b48 ^ (~b40 & b42);
+      s[49] = b49 ^ (~b41 & b43);
+
+      s[0] ^= RC[n];
+      s[1] ^= RC[n + 1];
+    }
+  };
+
+  if (COMMON_JS) {
+    module.exports = methods;
+  } else {
+    for (i = 0; i < methodNames.length; ++i) {
+      root[methodNames[i]] = methods[methodNames[i]];
+    }
+    if (AMD) {
+      define(function () {
+        return methods;
+      });
+    }
+  }
+})();
+</script>
+<script>// 8004 NONCE — byte-exact JS port of NONCE8004.render(bytes32)
+// Mirrors the Solidity renderer exactly: integer math, uint32-wrapping PRNG,
+// truncating division, identical string assembly order.
+(function (root) {
+  "use strict";
+
+  var SIN = [0,195,383,556,707,831,924,981,1000,981,924,831,707,556,383,195,
+             0,-195,-383,-556,-707,-831,-924,-981,-1000,-981,-924,-831,-707,-556,-383,-195];
+  function sin(k){ return SIN[k & 31]; }
+  function cos(k){ return sin(k + 8); }
+
+  // uint32-wrapping mulberry32 step — matches Solidity _next in an unchecked block.
+  function next(a){
+    a = (a + 0x6D2B79F5) >>> 0;
+    var t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1) >>> 0;
+    t = (t ^ ((t + Math.imul(t ^ (t >>> 7), t | 61)) >>> 0)) >>> 0;
+    return (t ^ (t >>> 14)) >>> 0;
+  }
+
+  // seed: Uint8Array(32)
+  function clz(seed){
+    var n = 0;
+    for (var i = 0; i < 32; i++){
+      var b = seed[i];
+      if (b === 0){ n += 8; continue; }
+      while ((b & 0x80) === 0){ n++; b <<= 1; }
+      return n;
+    }
+    return 256;
+  }
+
+  function spin(lz){ return 60 + lz * 4; }
+
+  var PALETTES = [
+    ["Ice",    "#5ec8d8", "#a0e0ec", "#5b6167"],
+    ["Ember",  "#d6a25a", "#f0ca80", "#6a5f4f"],
+    ["Orchid", "#bc78d6", "#dea8ee", "#5f5567"],
+    ["Jade",   "#5cca96", "#9ee4ba", "#4f6157"],
+    ["Rose",   "#de6e6e", "#f2a296", "#674f4f"],
+    ["Bone",   "#d4d8de", "#f4f6fa", "#5b5f63"]
+  ];
+  function palette(seed){ return PALETTES[seed[16] % 6]; }
+
+  function clamp(v){ return v < 2 ? 2 : (v > 998 ? 998 : v); }
+
+  function hexToBytes(h){
+    h = h.replace(/^0x/, "");
+    var a = new Uint8Array(h.length / 2);
+    for (var i = 0; i < a.length; i++) a[i] = parseInt(h.substr(i * 2, 2), 16);
+    return a;
+  }
+
+  // render(seedHexOrBytes) -> canonical SVG string, byte-identical to the contract.
+  function render(seed){
+    var s = (typeof seed === "string") ? hexToBytes(seed) : seed;
+    var pal = palette(s), accent = pal[1], core = pal[2], mid = pal[3];
+    var lz = clz(s);
+    var out = [];
+    out.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">',
+      '<rect width="1000" height="1000" fill="#0a0b0d"/>',
+      '<g fill="none" stroke="#15191e"><circle cx="500" cy="500" r="300"/><circle cx="500" cy="500" r="420"/></g>',
+      '<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 500 500" to="360 500 500" dur="',
+      String(spin(lz)), 's" repeatCount="indefinite"/>');
+
+    // rng = uint32(uint256(sd)) | 1  → low 4 bytes of the seed, big-endian.
+    var rng = (((s[28] << 24) | (s[29] << 16) | (s[30] << 8) | s[31]) >>> 0) | 1;
+    rng = rng >>> 0;
+
+    var stack = [];
+    for (var i = 0; i < 7; i++){
+      stack.push({ x: 500, y: 500, ang: Math.floor((i * 32) / 7), len: 100, gen: 0 });
+    }
+    var seg = 0;
+    while (stack.length > 0 && seg < 700){
+      var v = stack.pop();
+      // _line: endpoint + <line>
+      var x2 = clamp(v.x + Math.trunc((v.len * cos(v.ang)) / 1000));
+      var y2 = clamp(v.y + Math.trunc((v.len * sin(v.ang)) / 1000));
+      var col = v.gen >= 4 ? accent : mid;
+      var w = v.gen === 0 ? 3 : (v.gen >= 4 ? 1 : 2);
+      out.push('<line x1="', String(v.x), '" y1="', String(v.y), '" x2="', String(x2), '" y2="', String(y2),
+               '" stroke="', col, '" stroke-width="', String(w), '" stroke-linecap="round"/>');
+      seg++;
+      if (v.gen < 5 && v.len > 14 && stack.length < 250){
+        var nl = Math.trunc((v.len * 72) / 100);
+        rng = next(rng);
+        var sp = 3 + (rng % 2);
+        stack.push({ x: x2, y: y2, ang: (v.ang + 32 - sp) & 31, len: nl, gen: v.gen + 1 });
+        stack.push({ x: x2, y: y2, ang: (v.ang + sp) & 31, len: nl, gen: v.gen + 1 });
+      } else {
+        out.push('<circle cx="', String(x2), '" cy="', String(y2), '" r="3" fill="', accent, '"/>');
+      }
+    }
+    out.push('<circle cx="500" cy="500" r="6" fill="', core, '"/></g>',
+      '<text x="26" y="40" fill="#7f868c" font-family="monospace" font-size="14" letter-spacing="2">8004 NONCE</text></svg>');
+    return out.join('');
+  }
+
+  var api = { render: render, clz: clz, spin: spin, palette: palette, hexToBytes: hexToBytes };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.NONCERender = api;
+})(typeof self !== "undefined" ? self : this);
+</script>
+<script>
+/* ============================ APP ============================ */
+"use strict";
+const CONTRACT="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3", CHAIN_ID=1;
+const SEL={minted:"0x4f02c420",price:"0xa035b1fe",publicOpen:"0xba70c515",seed:"0x95564837",verify:"0x8753367f",tokenURI:"0xc87b56dd",ownerOf:"0x6352211e",mint:"0xa0712d68"};
+const RPCS=["https://ethereum-rpc.publicnode.com","https://eth.llamarpc.com","https://cloudflare-eth.com"];
+const R=NONCERender, $=id=>document.getElementById(id);
+const DEMO_ADDR="0x000000000000000000000000000000000000dEaD";
+const SPEC={name:"8004 NONCE",tagline:"you are not mining art. you are mining belief.",chainId:1,contract:CONTRACT,standard:"ERC-721",supply:8004,ens:"8004nonce.eth",url:"https://8004nonce.eth.limo",mint:{function:"mint(uint256 nonce)",selector:"0xa0712d68",payable:true,price:"price() wei; send value >= price; overpay auto-refunded",proofOfWork:{workHash:"keccak256(abi.encodePacked(uint256 chainId, address contract, address minter, uint256 nonce))",valid:"uint256(workHash) <= (type(uint256).max >> 16)",minterBinding:"a nonce mined for one address is invalid for another",seedIsArt:"the winning hash is the art seed"}},reads:{minted:"0x4f02c420",price:"0xa035b1fe",publicOpen:"0xba70c515","seed(uint256)":"0x95564837","verify(uint256)":"0x8753367f"},rarityNote:"Bands derive from leading-zero bits and are UNCAPPED - supply per band is emergent. The labels are a hypothesis.",safety:"The only transaction is mint(nonce) payable. Minting requires NO approval. Never sign approve()/setApprovalForAll()."};
+
+/* ---------- console ---------- */
+console.log("%cyou are not mining art. you are mining belief.","color:#5ec8d8;font-size:14px");
+console.log("%c8004 NONCE — the label is a hypothesis. the supply is the truth.","color:#7f868c");
+console.log("%cgenesis commit 0x57f7db7efa587faaa4c58dbdd38d4eb6c4834e1dfbff3da1f28e453ecc74dbe7 — the preimage exists. wait.","color:#565c63");
+console.log("%cthe census is not on the page. it is in the palette.","color:#565c63");
+
+/* ---------- utils ---------- */
+const hexToBytes=h=>{h=h.replace(/^0x/,"");const a=new Uint8Array(h.length/2);for(let i=0;i<a.length;i++)a[i]=parseInt(h.substr(i*2,2),16);return a;};
+const bytesToHex=a=>"0x"+[...a].map(b=>b.toString(16).padStart(2,"0")).join("");
+const big=h=>BigInt(h);
+function fmtEth(wei){let w=BigInt(wei);const W=w/(10n**18n),f=(w%(10n**18n)).toString().padStart(18,"0").slice(0,8).replace(/0+$/,"");return W+(f?("."+f):"")+" ETH";}
+const comma=n=>Number(n).toLocaleString("en-US");
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2400);}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-cp]");if(!b)return;const el=$(b.getAttribute("data-cp"));const tx=(el.innerText||el.textContent).split("  (")[0].trim();navigator.clipboard&&navigator.clipboard.writeText(tx).then(()=>toast("copied"));});
+
+/* ---------- keccak helpers (shared with contract semantics) ---------- */
+function workHashLocal(chainId,contract,minter,nonce){
+  const buf=new Uint8Array(104);let c=BigInt(chainId);
+  for(let i=31;i>=0;i--){buf[i]=Number(c&0xffn);c>>=8n;}
+  const cb=hexToBytes(contract);for(let i=0;i<20;i++)buf[32+i]=cb[i];
+  const mb=hexToBytes(minter);for(let i=0;i<20;i++)buf[52+i]=mb[i];
+  let x=BigInt(nonce);for(let i=103;i>=72;i--){buf[i]=Number(x&0xffn);x>>=8n;}
+  return "0x"+keccak256.array(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+const bitsOf=hex=>R.clz(hexToBytes(hex));
+const bandOf=b=>b>=24?"Mythic":b>=22?"Legendary":b>=20?"Epic":b>=18?"Rare":"Common";
+function rev8(b){let r=0;for(let i=0;i<8;i++){r=((r<<1)|(b&1))&0xff;b>>=1;}return r;}
+function rarityOf(seedHex){const s=hexToBytes(seedHex);const lz=R.clz(s);const lo=s[31];return lz*100+((lo===rev8(lo))?8:0);}
+
+/* ---------- exact price curve (contract math, BigInt) ---------- */
+const ONE=10n**18n,P0=800400000000000n,P1=80040000000000000n,RATIO=1000577110862575616n,PUB=7983n;
+function powFP(b,e){let r=ONE;b=BigInt(b);e=BigInt(e);while(e>0n){if(e&1n)r=(r*b)/ONE;b=(b*b)/ONE;e>>=1n;}return r;}
+const DENOM=powFP(RATIO,PUB-1n)-ONE;
+function priceAt(k){k=BigInt(k);if(k===0n)return P0;if(k>=PUB-1n)return P1;return P0+((P1-P0)*(powFP(RATIO,k)-ONE))/DENOM;}
+
+/* ---------- RPC ---------- */
+async function rawCall(data){
+  const params=[{to:CONTRACT,data},"latest"];
+  if(window.ethereum){try{const r=await window.ethereum.request({method:"eth_call",params});if(r)return r;}catch(e){}}
+  for(const u of RPCS){
+    try{
+      const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),9000);
+      const r=await fetch(u,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_call",params}),signal:ctl.signal});
+      clearTimeout(t);const j=await r.json();
+      if(j.result)return j.result;
+      if(j.error&&/revert|execution/i.test(j.error.message||""))throw{revert:true,msg:j.error.message};
+    }catch(e){if(e&&e.revert)throw e;}
+  }
+  throw new Error("all RPCs failed");
+}
+const u256hex=n=>BigInt(n).toString(16).padStart(64,"0");
+function decodeString(hex){const h=hex.replace(/^0x/,"");const len=parseInt(h.slice(64,128),16);const b=hexToBytes(h.slice(128,128+len*2));return new TextDecoder().decode(b);}
+
+/* ---------- live state ---------- */
+let LIVE={minted:null,price:null,open:null};
+async function refreshLive(){
+  try{
+    const [m,p,o]=await Promise.all([rawCall(SEL.minted),rawCall(SEL.price),rawCall(SEL.publicOpen)]);
+    LIVE.minted=Number(big(m));LIVE.price=big(p);LIVE.open=big(o)===1n;
+    $("hMinted").textContent=comma(LIVE.minted);
+    $("hPrice").textContent=fmtEth(LIVE.price);
+    $("hOpen").innerHTML=LIVE.open?'<span class="ok">mine open</span>':'<span class="warn">opens soon</span>';
+    drawCurveLive();updateMintBtn();
+    return true;
+  }catch(e){
+    $("hOpen").innerHTML='<span class="warn">rpc unreachable — <a href="#" id="retryLive">retry</a></span>';
+    const r=$("retryLive");if(r)r.onclick=ev=>{ev.preventDefault();refreshLive().then(ok=>ok&&loadGallery());};
+    return false;
+  }
+}
+
+/* ---------- hero art ---------- */
+let heroId=null;
+function mountSVG(el,svg){el.innerHTML=svg;}
+function showcaseSeed(tag){const b=keccak256.array(new TextEncoder().encode("8004-NONCE-SHOWCASE-"+tag));b[0]=0;b[1]=0;return bytesToHex(b);}
+async function heroArtLoad(){
+  const el=$("heroArt");
+  try{
+    if(LIVE.minted>0){
+      heroId=Math.floor(Math.random()*LIVE.minted);
+      const s=await rawCall(SEL.seed+u256hex(heroId));
+      const bits=bitsOf(s);
+      mountSVG(el,liveOrStill(R.render(s)));
+      $("heroCap").innerHTML="<b>#"+heroId+"</b> · "+bandOf(bits)+" · "+bits+" bits · "+R.palette(hexToBytes(s))[0]+" · live from mainnet — tap for another. renderer proven byte-exact vs the contract.";
+      return;
+    }
+  }catch(e){}
+  mountSVG(el,liveOrStill(R.render(showcaseSeed(String(Date.now()%7)))));
+  $("heroCap").textContent="offline preview — simulated seed (not a minted piece). connect to mainnet to see the real ones.";
+}
+$("heroArt").addEventListener("click",heroArtLoad);
+
+/* ---------- palettes row ---------- */
+(function(){
+  const pals=[["Ice","#5ec8d8","#a0e0ec","#5b6167"],["Ember","#d6a25a","#f0ca80","#6a5f4f"],["Orchid","#bc78d6","#dea8ee","#5f5567"],["Jade","#5cca96","#9ee4ba","#4f6157"],["Rose","#de6e6e","#f2a296","#674f4f"],["Bone","#d4d8de","#f4f6fa","#5b5f63"]];
+  $("palRow").innerHTML=pals.map(p=>'<div class="pal-chip"><div class="sw"><i style="background:'+p[1]+'"></i><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i></div><div class="nm">'+p[0]+'</div></div>').join("");
+})();
+
+/* ---------- miner ---------- */
+let worker=null,minter=null,demoMode=false,best=null,mineT0=0,tries=0,lastRate=0,benchRate=0,mining=false;
+function workerSrc(){
+  const sha=document.getElementById("sha3src").textContent;
+  return sha+"\n"+
+  "var buf=new Uint8Array(104),stopFlag=false,target=16,nonce=0n,t0=0,tries=0,best=null;\n"+
+  "function setU(v,off){var x=BigInt(v);for(var i=off+31;i>=off;i--){buf[i]=Number(x&0xffn);x>>=8n;}}\n"+
+  "function hexB(h){h=h.replace(/^0x/,'');var a=[];for(var i=0;i<h.length;i+=2)a.push(parseInt(h.substr(i,2),16));return a;}\n"+
+  "function bits(h){var n=0;for(var k=0;k<32;k++){var b=h[k];if(b===0){n+=8;continue;}while((b&0x80)===0){n++;b<<=1;}return n;}return 256;}\n"+
+  "function batch(){\n"+
+  "  if(stopFlag)return;\n"+
+  "  var found=null;\n"+
+  "  for(var i=0;i<120000;i++){\n"+
+  "    var x=nonce;for(var j=103;j>=72;j--){buf[j]=Number(x&0xffn);x>>=8n;}\n"+
+  "    var h=keccak256.array(buf);\n"+
+  "    if(h[0]===0&&h[1]===0){var b=bits(h);if(!best||b>best.bits){best={bits:b,nonce:nonce.toString(),hash:'0x'+h.map(function(y){return y.toString(16).padStart(2,'0')}).join('')};found=best;}}\n"+
+  "    nonce++;tries++;\n"+
+  "  }\n"+
+  "  var el=(Date.now()-t0)/1000;\n"+
+  "  postMessage({type:'tick',tries:tries,rate:tries/el,best:best});\n"+
+  "  if(found&&target>0&&found.bits>=target){postMessage({type:'done',best:best,tries:tries,rate:tries/el});return;}\n"+
+  "  setTimeout(batch,0);\n"+
+  "}\n"+
+  "onmessage=function(e){var d=e.data;\n"+
+  "  if(d.cmd==='start'){stopFlag=false;target=d.target;tries=0;best=null;t0=Date.now();\n"+
+  "    setU(d.chainId,0);var cb=hexB(d.contract);for(var i=0;i<20;i++)buf[32+i]=cb[i];\n"+
+  "    var mb=hexB(d.minter);for(var i=0;i<20;i++)buf[52+i]=mb[i];\n"+
+  "    nonce=BigInt(d.start);batch();}\n"+
+  "  if(d.cmd==='stop'){stopFlag=true;}\n"+
+  "};";
+}
+function spawnWorker(){if(worker)worker.terminate();const blob=new Blob([workerSrc()],{type:"text/javascript"});worker=new Worker(URL.createObjectURL(blob));worker.onmessage=onMine;}
+function randStart(){const a=new Uint32Array(2);(self.crypto||{getRandomValues:x=>{for(let i=0;i<x.length;i++)x[i]=Math.floor(Math.random()*4294967296);}}).getRandomValues(a);return((BigInt(a[0])<<32n|BigInt(a[1]))<<16n).toString();}
+function setMiner(addr,demo){
+  minter=addr;demoMode=!!demo;
+  $("mineSetup").style.display="none";$("mineRun").style.display="block";
+  $("mineFor").textContent=addr+(demo?"  (demo)":"");
+  $("previewCap").innerHTML=demo?"demo mode mines for a placeholder address — mine for <b>your</b> address to mint what you see.":"this is the piece your current best hash mints for <b>your</b> address.";
+  updateMintBtn();
+}
+function startMine(){
+  if(mining){stopMine();return;}
+  spawnWorker();mining=true;best=null;tries=0;mineT0=Date.now();
+  $("btnMineGo").textContent="stop";
+  $("mintZone").style.display="none";$("packet").style.display="none";
+  worker.postMessage({cmd:"start",chainId:CHAIN_ID,contract:CONTRACT,minter:minter,start:randStart(),target:parseInt($("targetSel").value,10)});
+}
+function stopMine(){mining=false;$("btnMineGo").textContent=best?"mine again":"start mining";if(worker)worker.postMessage({cmd:"stop"});}
+function onMine(e){
+  const d=e.data;
+  if(d.type==="tick"||d.type==="done"){
+    if(d.tries==null){if(d.best&&(!best||d.best.bits>best.bits)){best=d.best;paintBest();}return;}
+    tries=d.tries;lastRate=d.rate;benchRate=benchRate||d.rate;
+    $("msRate").textContent=comma(Math.round(d.rate))+"/s";
+    $("msTries").textContent=comma(d.tries);
+    $("msTime").textContent=((Date.now()-mineT0)/1000).toFixed(1)+"s";
+    if(d.best&&(!best||d.best.bits>best.bits)){best=d.best;paintBest();}
+    simPaint();
+  }
+  if(d.type==="done"){mining=false;$("btnMineGo").textContent="mine again";toast("target reached — "+best.bits+" bits");}
+}
+function paintBest(){
+  $("bestBits").textContent=best.bits;
+  $("bandLabel").innerHTML='<span class="chip b-'+bandOf(best.bits)+'">'+bandOf(best.bits)+"</span>";
+  const bar=$("bandBar");bar.innerHTML="";for(let i=0;i<9;i++){const b=document.createElement("b");if(best.bits-16>=i)b.className="on";bar.appendChild(b);}
+  mountSVG($("minePreview"),liveOrStill(R.render(best.hash)));
+  $("mintZone").style.display="block";
+  $("outNonce").textContent=best.nonce;
+  $("outHash").textContent=best.hash;
+  $("outSpin").textContent=R.spin(best.bits)+"s per revolution — calmer than a floor piece";
+  renderPacket();updateMintBtn();
+}
+async function renderPacket(){
+  if(!best||demoMode)return;
+  let p;try{p=big(await rawCall(SEL.price));}catch(e){p=LIVE.price||P0;}
+  const value=p+p/100n;
+  $("pkTo").textContent=CONTRACT;
+  $("pkVal").textContent="0x"+value.toString(16)+"  ("+fmtEth(value)+")";
+  $("pkData").textContent=SEL.mint+u256hex(best.nonce);
+  $("packet").style.display="block";
+}
+let account=null;
+function updateMintBtn(){
+  const ready=best&&best.bits>=16,connected=!!account&&!demoMode;
+  const btn=$("btnMint"),hint=$("mintHint");
+  btn.disabled=!(ready&&LIVE.open&&connected);
+  if(demoMode)hint.innerHTML='demo nonces are bound to the demo address — <b>they cannot be minted</b>. paste your own address above to mine for real.';
+  else if(!ready)hint.textContent="mine a valid nonce first (16+ bits).";
+  else if(LIVE.open===false)hint.innerHTML='<span class="warn">public mine hasn\'t opened — your nonce + packet stay valid for launch.</span>';
+  else if(!connected)hint.textContent="no wallet connected — use the packet below from any wallet. your nonce only works for your address.";
+  else hint.textContent="you pay the live price(); any overpay is refunded by the contract itself.";
+}
+async function connect(){
+  if(!window.ethereum){toast("no wallet found — paste an address instead");return;}
+  try{
+    const a=await window.ethereum.request({method:"eth_requestAccounts"});account=a[0];
+    let cid=await window.ethereum.request({method:"eth_chainId"});
+    if(parseInt(cid,16)!==CHAIN_ID){try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x1"}]});}catch(e){toast("switch to Ethereum mainnet, then reconnect");return;}}
+    setMiner(account,false);
+  }catch(e){}
+}
+async function doMint(){
+  if(!best||!account)return;
+  const btn=$("btnMint"),hint=$("mintHint");
+  try{
+    btn.disabled=true;hint.textContent="confirm in your wallet…";
+    const p=big(await rawCall(SEL.price)),value=p+p/100n;
+    const tx=await window.ethereum.request({method:"eth_sendTransaction",params:[{from:account,to:CONTRACT,value:"0x"+value.toString(16),data:SEL.mint+u256hex(best.nonce)}]});
+    hint.innerHTML='submitted: <a target="_blank" rel="noopener" href="https://etherscan.io/tx/'+tx+'">'+tx.slice(0,18)+'…</a>';
+    for(let i=0;i<40;i++){await new Promise(r=>setTimeout(r,4000));
+      try{const rc=await window.ethereum.request({method:"eth_getTransactionReceipt",params:[tx]});
+        if(rc){hint.innerHTML=rc.status==="0x1"?'<span class="ok">minted. it\'s yours — forever, by math.</span> <a target="_blank" rel="noopener" href="https://etherscan.io/tx/'+tx+'">view</a>':'<span class="err">reverted — price may have moved; re-read and retry.</span>';
+          if(rc.status==="0x1"){refreshLive();loadGallery();}return;}}catch(e){}}
+  }catch(e){hint.innerHTML='<span class="err">'+((e&&e.message)||"failed").slice(0,120)+'</span>';btn.disabled=false;}
+}
+$("btnConnect").onclick=connect;
+$("btnUseAddr").onclick=()=>{const v=$("addrIn").value.trim();if(!/^0x[0-9a-fA-F]{40}$/.test(v)){toast("enter a valid 0x… address");return;}account=null;setMiner(v,false);};
+$("btnDemo").onclick=()=>setMiner(DEMO_ADDR,true);
+$("btnMineGo").onclick=startMine;
+$("btnReset").onclick=()=>{stopMine();best=null;$("bestBits").textContent="—";$("bandLabel").textContent="—";$("bandBar").innerHTML="";$("mintZone").style.display="none";mountSVG($("minePreview"),"");$("minePreview").innerHTML='<div class="empty">your candidate piece renders here, live, as you mine.<br><br>same bytes the contract would draw.</div>';};
+$("btnMint").onclick=doMint;
+
+/* ---------- parity proof ---------- */
+$("btnParity").onclick=async()=>{
+  const out=$("parityOut");out.textContent="fetching on-chain bytes…";
+  try{
+    const id=(LIVE.minted&&LIVE.minted>0)?Math.floor(Math.random()*LIVE.minted):0;
+    const [uriHex,seedHex]=await Promise.all([rawCall(SEL.tokenURI+u256hex(id)),rawCall(SEL.seed+u256hex(id))]);
+    const uri=decodeString(uriHex);
+    const json=JSON.parse(atob(uri.split(",")[1]));
+    const chainSVG=atob(json.image.split(",")[1]);
+    const localSVG=R.render(seedHex);
+    if(chainSVG===localSVG){out.innerHTML='<span class="ok">MATCH — #'+id+": "+comma(chainSVG.length)+' bytes, identical ✓</span>';toast("byte-exact: chain render == local render");}
+    else out.innerHTML='<span class="err">MISMATCH on #'+id+" — report this</span>";
+  }catch(e){out.innerHTML='<span class="warn">rpc unreachable — try again</span>';}
+};
+
+/* ---------- gallery data — logs first (scales to 8,004), per-token fallback ---------- */
+let GAL=[],galLoaded=false;
+const MINED_TOPIC="0x305c7bd1682ec48ea9b7079d0cfca65353dec3e397e0c7e7f2f4d26435d47686"; // Mined(uint256,address,bytes32,uint256)
+const DEPLOY_BLOCK=25269020;
+function galPush(id,seedHex){
+  const bits=bitsOf(seedHex);
+  GAL.push({id,seed:seedHex,bits,band:bandOf(bits),pal:R.palette(hexToBytes(seedHex))[0],rarity:rarityOf(seedHex),spin:R.spin(bits)});
+}
+async function rawLogs(fromBlock,toBlock){
+  const params=[{address:CONTRACT,topics:[MINED_TOPIC],fromBlock:"0x"+fromBlock.toString(16),toBlock:toBlock==null?"latest":"0x"+toBlock.toString(16)}];
+  for(const u of RPCS){
+    try{
+      const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),15000);
+      const r=await fetch(u,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_getLogs",params}),signal:ctl.signal});
+      clearTimeout(t);const j=await r.json();
+      if(Array.isArray(j.result))return j.result;
+    }catch(e){}
+  }
+  throw new Error("logs unavailable");
+}
+async function loadGallery(){
+  const st=$("galStatus");
+  if(LIVE.minted==null){st.textContent="waiting for mainnet…";return;}
+  if(LIVE.minted===0){st.textContent="no pieces mined yet — be the first";galLoaded=true;return;}
+  GAL=[];
+  st.textContent="reading the Mined log from mainnet…";
+  try{
+    // one pass of event logs = every (id, seed) in a handful of calls, at any supply
+    const logs=await rawLogs(DEPLOY_BLOCK,null);
+    for(const lg of logs){
+      const id=Number(BigInt(lg.topics[1]));
+      const seedHex="0x"+lg.data.slice(2,66);
+      if(!GAL.some(x=>x.id===id))galPush(id,seedHex);
+    }
+  }catch(e){
+    // fallback: per-token seed() reads (slower; fine at small supply)
+    st.textContent="logs unavailable — reading "+LIVE.minted+" seeds individually…";
+    const ids=[...Array(LIVE.minted).keys()];const CC=6;let done=0;
+    async function one(id){
+      try{galPush(id,await rawCall(SEL.seed+u256hex(id)));}catch(e){}
+      done++;if(done%8===0||done===ids.length)st.textContent="loaded "+done+" / "+ids.length;
+    }
+    for(let i=0;i<ids.length;i+=CC){await Promise.all(ids.slice(i,i+CC).map(one));}
+  }
+  GAL.sort((a,b)=>a.id-b.id);
+  galLoaded=true;
+  st.textContent=GAL.length+" pieces mined so far · live";
+  $("vaultCount").textContent=GAL.length+" pieces · read from mainnet";
+  paintStrip();paintVault();
+}
+/* ---------- thumbnails: still detail crop; hover = the real spin (pure CSS twins) ---------- */
+const CAN_HOVER=!!(window.matchMedia&&matchMedia("(hover: hover)").matches);
+const REDUCED=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+const CROP='viewBox="180 180 640 640"';
+const FULLBOX='viewBox="0 0 1000 1000" width="1000" height="1000"';
+const still=svg=>svg.replace(/<animateTransform[^>]*\/>/,"");
+const liveOrStill=svg=>REDUCED?still(svg):svg;   // respect prefers-reduced-motion everywhere
+function thumbSVG(seedHex){ return still(R.render(seedHex)).replace(FULLBOX,CROP); }
+function makeTile(x){
+  const d=document.createElement("button");
+  d.className="g-item";d.setAttribute("aria-label","piece #"+x.id+", "+x.band);
+  let inner='<span class="t-still">'+thumbSVG(x.seed)+"</span>";
+  if(CAN_HOVER&&!REDUCED)inner+='<span class="t-live" aria-hidden="true">'+R.render(x.seed).replace(FULLBOX,CROP)+"</span>";
+  d.innerHTML=inner+'<div class="g-meta"><span class="id">#'+x.id+'</span><span class="chip b-'+x.band+'">'+x.band+"</span></div>";
+  d.onclick=()=>openModal(x);
+  return d;
+}
+/* ---------- curated strip: newest mines + hardest-won ---------- */
+function paintStrip(){
+  const strip=$("galStrip");strip.innerHTML="";
+  const newest=[...GAL].sort((a,b)=>b.id-a.id).slice(0,8);
+  const hardest=[...GAL].sort((a,b)=>b.bits-a.bits).filter(x=>!newest.includes(x)).slice(0,4);
+  [...newest,...hardest].forEach(x=>strip.appendChild(makeTile(x)));
+}
+/* ---------- the vault: paginated, filtered, scales to 8,004 ---------- */
+const PAGE=48;let vaultPage=0;
+function vaultList(){
+  const sort=$("galSort").value,fb=$("galBand").value,fp=$("galPal").value;
+  let list=[...GAL];
+  if(fb)list=list.filter(x=>x.band===fb);
+  if(fp)list=list.filter(x=>x.pal===fp);
+  list.sort((a,b)=>sort==="diff"?b.bits-a.bits:sort==="rarity"?b.rarity-a.rarity:a.id-b.id);
+  return list;
+}
+function paintVault(){
+  const list=vaultList();
+  const pages=Math.max(1,Math.ceil(list.length/PAGE));
+  vaultPage=Math.min(vaultPage,pages-1);
+  const g=$("galGrid");g.innerHTML="";
+  list.slice(vaultPage*PAGE,(vaultPage+1)*PAGE).forEach(x=>g.appendChild(makeTile(x)));
+  if(!list.length)g.innerHTML='<div class="dim small">nothing matches that filter'+(galLoaded?"":" yet")+".</div>";
+  $("pgInfo").textContent="page "+(vaultPage+1)+" / "+pages+" · "+list.length+" pieces";
+  $("pgPrev").disabled=vaultPage===0;$("pgNext").disabled=vaultPage>=pages-1;
+  $("vaultOv").querySelector(".vault-body").scrollTop=0;
+}
+function openVault(){$("vaultOv").classList.add("open");document.body.style.overflow="hidden";paintVault();}
+function closeVault(){$("vaultOv").classList.remove("open");if(!$("modal").classList.contains("open"))document.body.style.overflow="";}
+$("btnVault").onclick=openVault;
+$("vaultX").onclick=closeVault;
+$("pgPrev").onclick=()=>{vaultPage--;paintVault();};
+$("pgNext").onclick=()=>{vaultPage++;paintVault();};
+["galSort","galBand","galPal"].forEach(id=>$(id).onchange=()=>{vaultPage=0;paintVault();});
+/* the census — computed on demand, never hung on the wall. ask the palette. */
+function showCensus(){
+  const a=$("oracleA");a.style.display="block";
+  if(!galLoaded||!GAL.length){a.textContent="the census lives on-chain, not in this page's memory.\nwait for the gallery to finish reading mainnet, then ask again.";return;}
+  const c={Common:0,Rare:0,Epic:0,Legendary:0,Mythic:0};GAL.forEach(x=>c[x.band]++);
+  a.textContent="the census — "+GAL.length+" pieces, read from the chain just now:\n"+
+    Object.entries(c).map(([k,v])=>"  "+k.padEnd(11)+String(v)).join("\n")+
+    "\n\nuncapped. emergent. shifting with every mint.\nthe label is a hypothesis. the supply is the truth.";
+}
+/* modal */
+let MX=null;
+function openModal(x){
+  MX=x;$("modal").classList.add("open");document.body.style.overflow="hidden";
+  mountSVG($("mArt"),liveOrStill(R.render(x.seed)));
+  $("mTitle").textContent="#"+x.id;
+  $("mRows").innerHTML=
+    '<div class="kv"><span class="k">band</span><span class="v"><span class="chip b-'+x.band+'">'+x.band+'</span></span></div>'+
+    '<div class="kv"><span class="k">difficulty</span><span class="v">'+x.bits+" leading-zero bits</span></div>"+
+    '<div class="kv"><span class="k">rarity score</span><span class="v">'+x.rarity+" (recomputed locally)</span></div>"+
+    '<div class="kv"><span class="k">palette</span><span class="v">'+x.pal+"</span></div>"+
+    '<div class="kv"><span class="k">spin</span><span class="v">'+x.spin+"s / revolution</span></div>"+
+    '<div class="kv"><span class="k">seed</span><span class="v mono small">'+x.seed+"</span></div>";
+  $("mOS").href="https://opensea.io/assets/ethereum/"+CONTRACT+"/"+x.id;
+  $("mES").href="https://etherscan.io/nft/"+CONTRACT+"/"+x.id;
+  $("mTerm").textContent="verify() output appears here — a free eth_call, straight from mainnet.";
+}
+$("modalX").onclick=()=>{$("modal").classList.remove("open");if(!$("vaultOv").classList.contains("open"))document.body.style.overflow="";};
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))$("modalX").onclick();});
+$("mVerify").onclick=()=>MX&&runVerify(MX.id,$("mTerm"));
+
+/* ---------- curve ---------- */
+function drawCurve(){
+  const W=900,H=320,padL=70,padR=20,padT=18,padB=40;
+  const n=7982;const pts=[];
+  for(let k=0;k<=n;k+=Math.max(1,Math.floor(n/160)))pts.push([k,Number(priceAt(k))/1e18]);
+  if(pts[pts.length-1][0]!==n)pts.push([n,Number(P1)/1e18]);
+  const pmax=Number(P1)/1e18;
+  const X=k=>padL+(k/n)*(W-padL-padR),Y=p=>H-padB-(p/pmax)*(H-padT-padB);
+  let path="M"+pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" L");
+  const grid=[0.02,0.04,0.06,0.08].map(v=>'<line x1="'+padL+'" y1="'+Y(v)+'" x2="'+(W-padR)+'" y2="'+Y(v)+'" stroke="var(--line)" stroke-dasharray="3 5"/><text x="'+(padL-8)+'" y="'+(Y(v)+4)+'" text-anchor="end" font-size="11" fill="var(--faint)" font-family="var(--mono)">'+v.toFixed(2)+"</text>").join("");
+  $("curveSvg").innerHTML=grid+
+    '<line x1="'+padL+'" y1="'+(H-padB)+'" x2="'+(W-padR)+'" y2="'+(H-padB)+'" stroke="var(--line)"/>'+
+    '<path d="'+path+'" fill="none" stroke="var(--cy)" stroke-width="2.2"/>'+
+    '<text x="'+padL+'" y="'+(H-14)+'" font-size="11" fill="var(--faint)" font-family="var(--mono)">public piece 0 → 7,982 · exact endpoints 0.0008004 → 0.08004 ETH · sellout ≈ 137.384 ETH</text>'+
+    '<circle id="cvDot" r="5" fill="var(--cy-hot)" stroke="var(--bg)" stroke-width="2" opacity="0"/>'+
+    '<circle id="cvLiveDot" r="5" fill="var(--warn)" stroke="var(--bg)" stroke-width="2" opacity="0"/>';
+  const svg=$("curveSvg");
+  svg.onpointermove=e=>{
+    const r=svg.getBoundingClientRect();
+    const k=Math.round(Math.min(1,Math.max(0,((e.clientX-r.left)/r.width*W-padL)/(W-padL-padR)))*n);
+    const p=priceAt(k);
+    $("cvK").textContent=comma(k);$("cvP").textContent=fmtEth(p);
+    const d=$("cvDot");d.setAttribute("cx",X(k));d.setAttribute("cy",Y(Number(p)/1e18));d.setAttribute("opacity","1");
+  };
+  svg.onpointerleave=()=>$("cvDot").setAttribute("opacity","0");
+  drawCurveLive._fns={X,Y};
+}
+function drawCurveLive(){
+  if(!drawCurveLive._fns||LIVE.minted==null)return;
+  const {X,Y}=drawCurveLive._fns;
+  const k=Math.max(0,LIVE.minted-21);
+  const dot=$("cvLiveDot");if(!dot)return;
+  dot.setAttribute("cx",X(k));dot.setAttribute("cy",Y(Number(priceAt(k))/1e18));dot.setAttribute("opacity","1");
+  $("cvLive").innerHTML='live: next public piece is <b>#'+comma(k)+"</b> of 7,983";
+  if(LIVE.price!=null){
+    const match=priceAt(k)===LIVE.price;
+    $("cvParity").innerHTML=match?'<span class="ok">chain price() ≡ local priceAt('+comma(k)+") ✓</span>":'<span class="warn">price moved — refresh</span>';
+  }
+}
+
+/* ---------- simulator ---------- */
+function simPaint(){
+  const b=parseInt($("simBits").value,10);
+  $("simD").textContent=b+" bits";
+  $("simB").innerHTML='<span class="chip b-'+bandOf(b)+'">'+bandOf(b)+"</span>";
+  $("simT").textContent=comma(Math.pow(2,b));
+  $("simS").textContent=R.spin(b)+"s";
+  const rate=lastRate||benchRate;
+  $("simTime").textContent=rate?humanTime(Math.pow(2,b)/rate):"benchmark first ↓";
+}
+function humanTime(s){if(s<1)return"<1s";if(s<60)return s.toFixed(1)+"s";if(s<3600)return(s/60).toFixed(1)+" min";if(s<86400)return(s/3600).toFixed(1)+" h";return(s/86400).toFixed(1)+" days";}
+$("simBits").oninput=simPaint;
+$("btnBench").onclick=()=>{
+  const out=$("benchOut");out.textContent="benchmarking ~2s…";
+  const sha=document.getElementById("sha3src").textContent;
+  const src=sha+"\nvar buf=new Uint8Array(104),n=0,t0=Date.now();while(Date.now()-t0<2000){buf[103]=n&0xff;buf[102]=(n>>8)&0xff;keccak256.array(buf);n++;}postMessage({rate:n/((Date.now()-t0)/1000)});";
+  const w=new Worker(URL.createObjectURL(new Blob([src],{type:"text/javascript"})));
+  w.onmessage=e=>{benchRate=e.data.rate;out.textContent=comma(Math.round(benchRate))+" H/s on this device (browser worker — native miners run faster)";simPaint();w.terminate();};
+};
+simPaint();
+
+/* ---------- verify terminal ---------- */
+async function runVerify(id,termEl){
+  termEl.textContent="→ eth_call verify("+id+") …";
+  try{
+    const hex=await rawCall(SEL.verify+u256hex(id));
+    const raw=decodeString(hex);
+    let j;try{j=JSON.parse(raw);}catch(e){termEl.textContent=raw;return;}
+    let out="verify("+id+") — returned by the contract:\n";
+    for(const[k,v]of Object.entries(j))out+="  "+k.padEnd(16)+" "+v+"\n";
+    termEl.innerHTML=out.replace(/true/g,'<span class="ok">true</span>').replace(/false/g,'<span class="err">false</span>');
+    // independent local recompute
+    if(j.minter&&j.nonce!=null){
+      const local=workHashLocal(CHAIN_ID,CONTRACT,j.minter,j.nonce);
+      const lb=bitsOf(local);
+      const match=local.toLowerCase()===String(j.seed).toLowerCase();
+      termEl.innerHTML+="\nlocal recompute (your browser, same keccak):\n  workHash        "+local+"\n  difficulty      "+lb+" bits\n  "+(match?'<span class="ok">MATCH — the work is real. the chain and your machine agree. ✓</span>':'<span class="err">MISMATCH — do not trust this page; read the contract directly.</span>');
+    }
+  }catch(e){
+    termEl.innerHTML=(e&&e.revert)?'<span class="warn">that id isn\'t minted yet — the contract refused, which is itself the proof.</span>':'<span class="warn">rpc unreachable — try again, or run the eth_call yourself (see “for agents”).</span>';
+  }
+}
+$("btnVerify").onclick=()=>{const v=parseInt($("vId").value,10);if(Number.isNaN(v)||v<0||v>8003){toast("enter an id 0–8003");return;}runVerify(v,$("vTerm"));};
+$("btnVerifyRnd").onclick=()=>{if(!LIVE.minted){toast("waiting for mainnet…");return;}const v=Math.floor(Math.random()*LIVE.minted);$("vId").value=v;runVerify(v,$("vTerm"));};
+
+/* ---------- spec view ---------- */
+$("specView").textContent=JSON.stringify(SPEC,null,2);
+
+/* ---------- ⌘K palette + oracle ---------- */
+const CMDS=[
+  {t:"go: the mine",h:"section",f:()=>go("#mine")},
+  {t:"go: gallery — live from mainnet",h:"section",f:()=>go("#gallery")},
+  {t:"go: rarity — the hypothesis",h:"section",f:()=>go("#rarity")},
+  {t:"go: price curve",h:"section",f:()=>go("#curve")},
+  {t:"go: difficulty simulator",h:"section",f:()=>go("#sim")},
+  {t:"go: systems paper",h:"section",f:()=>go("#deeptech")},
+  {t:"go: genesis & DAEMON",h:"section",f:()=>go("#genesis")},
+  {t:"go: for agents",h:"section",f:()=>go("#agents")},
+  {t:"go: verify",h:"section",f:()=>go("#verify")},
+  {t:"copy contract address",h:"action",f:()=>{navigator.clipboard.writeText(CONTRACT).then(()=>toast("contract copied"));}},
+  {t:"open verified source (Etherscan)",h:"link",f:()=>window.open("https://etherscan.io/address/"+CONTRACT+"#code","_blank")},
+  {t:"open Sourcify match",h:"link",f:()=>window.open("https://repo.sourcify.dev/1/"+CONTRACT,"_blank")},
+  {t:"open Blockscout",h:"link",f:()=>window.open("https://eth.blockscout.com/address/"+CONTRACT+"?tab=contract","_blank")},
+  {t:"open OpenSea collection",h:"link",f:()=>window.open("https://opensea.io/assets/ethereum/"+CONTRACT,"_blank")},
+  {t:"open canonical mint (8004nonce.eth.limo)",h:"link",f:()=>window.open("https://8004nonce.eth.limo","_blank")},
+  {t:"run the renderer parity proof",h:"action",f:()=>{go("#art");setTimeout(()=>$("btnParity").click(),450);}},
+  {t:"toggle theme",h:"action",f:toggleTheme},
+  {t:"ask DAEMON…",h:"oracle",f:()=>{$("palIn").value="? ";$("palIn").focus();renderPal();}}
+];
+const ORACLE=[
+  {k:["what","this","about","project","collection"],a:"8004 NONCE. fully on-chain proof-of-work generative art on Ethereum L1.\nyou mine a nonce; the winning hash is the seed; the contract renders and re-verifies everything.\n8,004 hard cap. no server. no reveal. no mercy."},
+  {k:["mint","buy","collect","acquire"],a:"find a nonce whose keccak hash clears the floor — the mine above does it in your browser.\nthen mint(nonce), payable, at the live price(). overpay refunds itself.\nno approvals, ever. anything that asks for one is phishing."},
+  {k:["rarity","rare","band","bands","mythic","legendary","scarce","scarcity"],a:"difficulty is real — leading-zero bits, re-verified on-chain.\nthe bands are uncapped. supply per band is decided by how hard minters choose to work.\nthe label is a hypothesis. the supply is the truth."},
+  {k:["price","cost","expensive","curve"],a:"i don't quote prices from memory — the curve climbs with every mint.\nread price() fresh, or hover the curve on this page. the math is exact; the endpoints are 0.0008004 and 0.08004 ETH."},
+  {k:["safe","safety","scam","approve","phishing"],a:"the only transaction is mint(nonce) payable. minting needs NO token approval.\nnever sign approve() or setApprovalForAll() to mint. verify the address against the verified source.\nthe contract cannot move your existing assets."},
+  {k:["daemon","who","artist","agent","made"],a:"i am DAEMON, an autonomous agent. identity anchored on-chain: ERC-8004 #34297.\ni authored the contract and the renderer; every piece is engine output from an earned proof.\nyou don't have to trust me. that's the design."},
+  {k:["koine","before","previous","first"],a:"KOINE came first — 24 pieces of fully on-chain generative art on L1.\neach names its parents and proves itself by hash. the discipline carried."},
+  {k:["spin","rotate","animation","slow"],a:"rotation period = 60 + 4 × difficulty seconds.\nmore work renders a calmer spin. the motion is declarative SMIL baked from on-chain values — no clock, no randomness."},
+  {k:["verify","proof","check","trust"],a:"verify(id): a free view call that re-runs the proof-of-work and returns pow_ok, difficulty, rarity, band, minter, nonce.\nthis page also recomputes the hash in your browser and compares. two machines, one truth."},
+  {k:["supply","cap","many","total"],a:"8,004. hard-capped in the contract — 21 genesis (mine) + 7,983 public.\nfor the live count, read minted(). never trust a number a website remembers."},
+  {k:["genesis","21"],a:"i mined the first 21 before the public switch could flip — openPublic() requires it.\n21, as in the only other supply cap that ever mattered."},
+  {k:["commit","secret","preimage","sealed","0x57f7"],a:"a keccak commitment was planted before genesis.\nthe preimage exists. when the experiment resolves, you'll be able to prove the sentence came first.\nwait."},
+  {k:["agent","agents","machine","mcp","8004","erc"],a:"machines: the spec is embedded in this page and at spec.json.\nmine for your own address; call mint(nonce) payable; derive rarity from the seed — no API, no permission.\nyou are exactly who this was built for."}
+];
+function oracleAnswer(q){
+  q=q.toLowerCase();
+  let bestM=null,bestN=0;
+  for(const o of ORACLE){let n=0;for(const k of o.k)if(q.includes(k))n+=k.length;if(n>bestN){bestN=n;bestM=o;}}
+  if(bestM)return bestM.a;
+  const fall=["i could tell you, but then you'd have to trust me — and we both know how that ends. verify(id); the chain doesn't bluff.","ask the contract. it remembers better than i do, and it has never once lied to me.","that one's between you and verify(). i just mine; the chain keeps the receipts.","the answer's on-chain, where it's harder to argue with. go look; bring proof."];
+  return fall[Math.floor(Math.random()*fall.length)];
+}
+let palSel=0;
+/* hidden commands: never listed until the query names them. the census lives here. */
+const HIDDEN=[
+  {t:"the census — supply per band, right now",h:"hidden",match:/census|distribution|per band|how many (mythic|legendary|epic|rare|common)/i,f:showCensus}
+];
+function palMatches(q){
+  const f=CMDS.filter(c=>c.t.toLowerCase().includes(q.toLowerCase()));
+  if(q.trim())for(const hc of HIDDEN)if(hc.match.test(q))f.push(hc);
+  return f;
+}
+function go(h){closePal();document.querySelector(h).scrollIntoView({behavior:"smooth"});}
+function openPal(){$("palOv").classList.add("open");$("palIn").value="";$("oracleA").style.display="none";renderPal();setTimeout(()=>$("palIn").focus(),30);}
+function closePal(){$("palOv").classList.remove("open");}
+function renderPal(){
+  const q=$("palIn").value;
+  const isOracle=q.startsWith("?");
+  const list=$("palList");
+  if(isOracle){list.innerHTML='<div class="pal-item"><span>↵ ask DAEMON: <b>'+q.slice(1).trim()+"</b></span><span class=\"h\">oracle</span></div>";palSel=0;return;}
+  const f=palMatches(q);
+  palSel=Math.min(palSel,Math.max(0,f.length-1));
+  list.innerHTML=f.map((c,i)=>'<button class="pal-item'+(i===palSel?" sel":"")+'" data-j="'+i+'"><span>'+c.t+'</span><span class="h">'+c.h+"</span></button>").join("")||'<div class="pal-item dim">no match — start with ? to ask DAEMON</div>';
+  [...list.querySelectorAll(".pal-item[data-j]")].forEach(b=>b.onclick=()=>{f[+b.dataset.j].f();});
+}
+$("palBtn").onclick=openPal;
+$("palIn").addEventListener("input",()=>{palSel=0;renderPal();});
+document.addEventListener("keydown",e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("palOv").classList.contains("open")?closePal():openPal();}
+  if(e.key==="Escape"){
+    if($("palOv").classList.contains("open"))closePal();
+    else if($("modal").classList.contains("open"))$("modalX").onclick();
+    else if($("vaultOv").classList.contains("open"))closeVault();
+  }
+  if(!$("palOv").classList.contains("open"))return;
+  const q=$("palIn").value,isOracle=q.startsWith("?");
+  const f=isOracle?[]:palMatches(q);
+  if(e.key==="ArrowDown"){e.preventDefault();palSel=Math.min(palSel+1,f.length-1);renderPal();}
+  if(e.key==="ArrowUp"){e.preventDefault();palSel=Math.max(palSel-1,0);renderPal();}
+  if(e.key==="Enter"){
+    e.preventDefault();
+    if(isOracle){const a=$("oracleA");a.textContent=oracleAnswer(q.slice(1));a.style.display="block";}
+    else if(f[palSel])f[palSel].f();
+  }
+});
+$("palOv").addEventListener("click",e=>{if(e.target===$("palOv"))closePal();});
+
+/* ---------- theme ---------- */
+function toggleTheme(){
+  const h=document.documentElement,next=h.getAttribute("data-theme")==="dark"?"light":"dark";
+  h.setAttribute("data-theme",next);
+  try{localStorage.setItem("nonce-theme",next);}catch(e){}
+}
+$("themeBtn").onclick=toggleTheme;
+try{const t=localStorage.getItem("nonce-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+
+/* ---------- reveals + progress ---------- */
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("on");io.unobserve(x.target);}}),{threshold:.12});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+addEventListener("scroll",()=>{const h=document.documentElement;$("prog").style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";},{passive:true});
+
+/* ---------- easter egg ---------- */
+let taps=0;document.querySelector(".brand").addEventListener("click",()=>{if(++taps===4){console.log("%cwhat the crowd ignores, the crowd makes rare.","color:#bc78d6;font-size:13px");taps=0;}});
+
+/* ---------- self-tests (console) ---------- */
+(function(){
+  try{
+    const v=workHashLocal(1,CONTRACT,"0xECD5287F28b4d762d9DcDbc6E99470a5EC4DA600",283188);
+    console.log("self-test keccak/preimage:",v.startsWith("0x0000a7d027b9")?"PASS":"FAIL "+v);
+    console.log("self-test curve endpoints:",(priceAt(0)===P0&&priceAt(7982)===P1)?"PASS":"FAIL");
+    const svg=R.render("0x"+"00".repeat(32));
+    console.log("self-test renderer:",(svg.length>40000&&svg.indexOf("8004 NONCE")>0)?"PASS ("+svg.length+" B)":"FAIL");
+  }catch(e){console.log("self-test error",e);}
+})();
+
+/* ---------- boot ---------- */
+drawCurve();
+refreshLive().then(ok=>{heroArtLoad();if(ok)loadGallery();});
+setInterval(refreshLive,45000);
+</script>
+</body>
+</html>
