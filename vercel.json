@@ -1,5 +1,6 @@
 {
   "redirects": [
+    { "source": "/", "destination": "https://8004nonce.eth.limo/", "permanent": false },
     { "source": "/:path*", "destination": "https://8004nonce.eth.limo/:path*", "permanent": false }
   ],
   "headers": [
