@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- 8004 NONCE - how to mint & stay safe. you cannot buy what everyone is buying. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8004 NONCE - how to mint & safety</title>
+<link rel="alternate" type="application/json" href="spec.json" title="8004 NONCE machine-readable spec">
+<meta name="8004-contract" content="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3">
+<meta name="8004-chainId" content="1">
+<meta name="8004-spec" content="spec.json">
+<style>
+  :root{--bg:#0a0b0d;--panel:#111419;--line:#1d222a;--ink:#d4d8de;--dim:#7f868c;--accent:#5ec8d8;--ok:#5cca96;--warn:#d6a25a;--err:#de6e6e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1.6;padding:24px}
+  .wrap{max-width:680px;margin:0 auto}
+  h1{font-size:20px;letter-spacing:3px} h2{font-size:15px;color:var(--accent);margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+  a{color:var(--accent)} code{background:#000;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:12px;word-break:break-all}
+  .tag{color:var(--dim);font-size:12px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+  .warn{color:var(--warn)} .ok{color:var(--ok)} .dim{color:var(--dim)}
+  ol{padding-left:20px} li{margin:6px 0}
+  .danger{border-color:var(--err)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>8004&nbsp;NONCE</h1>
+  <div class="tag">how to mint &amp; stay safe - <a href="./">main site</a> · <a href="mint.html">classic mint page</a></div>
+
+  <div class="panel">
+    <b>The one thing to know:</b> this contract is verified and has <b>no approval or drainer surface</b>.
+    The only thing you ever sign is one <code>mint(nonce)</code> payment that returns a token - so no mint
+    method here can drain your wallet. The only real risk is <b>phishing</b> (a fake page or fake address).
+    <div style="margin-top:8px" class="warn">A real 8004 NONCE mint NEVER asks you to "Approve" or "Set Approval For All" - only to pay one mint. If anything asks for an approval signature, it is fake. Walk away.</div>
+  </div>
+
+  <h2>Always verify first</h2>
+  Canonical contract: <code>0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3</code> - verified Exact Match on
+  <a target="_blank" href="https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#code">Etherscan</a>,
+  <a target="_blank" href="https://repo.sourcify.dev/1/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3">Sourcify</a>,
+  <a target="_blank" href="https://eth.blockscout.com/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3?tab=contract">Blockscout</a>.
+  Confirm any page or packet you use points to exactly this address. Official pages: <b>8004nonce.eth.limo</b> (ENS: <b>8004nonce.eth</b>) and its Arweave mirror <b>daemon-8004nonce.ar.io</b> &mdash; anything else is a copy.
+
+  <h2>Method 1 - the mint page (easiest)</h2>
+  <ol>
+    <li>Open the <a href="./#mine">main page</a> (or the minimal <a href="mint.html">classic mint page</a>) and click <b>Connect wallet</b> (Ethereum Mainnet).</li>
+    <li>Press <b>start mining</b> and watch the bits climb. It stops at the first valid nonce (16 bits is the minimum), or pick a higher target first; more is your choice. On the classic page, press <b>Mine</b>.</li>
+    <li>Click <b>Mint</b>, review the <code>mint</code> transaction in your wallet, sign. Overpay is auto-refunded.</li>
+  </ol>
+
+  <h2>Method 2 - mine without connecting (no wallet connection)</h2>
+  <div class="dim">For anyone who would rather not connect a wallet to a website.</div>
+  <ol>
+    <li>Skip <b>Connect wallet</b> and paste your wallet address instead (main page: <b>mine for this address</b>; classic page: <b>mine without connecting</b>).</li>
+    <li>Mine, then copy the <b>mint packet</b> it shows you: <code>to</code>, <code>value</code>, <code>data</code>. Send it on Ethereum mainnet from that same address - the nonce only works for the address it was mined for.</li>
+    <li>In your own wallet, do a <b>Send</b> to <code>to</code>, amount = <code>value</code>, and paste <code>data</code> into the hex-data field (MetaMask: Settings &rarr; Advanced &rarr; Show hex data). Sign. Done - the page never touched your wallet.</li>
+  </ol>
+
+  <h2>Method 3 - straight from Etherscan (most trustless)</h2>
+  <ol>
+    <li>Get a nonce: use Method 2's miner to mine for your address (you only need the nonce).</li>
+    <li>Open the verified contract on <a target="_blank" href="https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#writeContract">Etherscan &rarr; Contract &rarr; Write Contract</a>, click <b>Connect to Web3</b> (you connect to Etherscan, not to us).</li>
+    <li>Read the current price under <b>Read Contract &rarr; price()</b>.</li>
+    <li>In <code>mint</code>: set <b>payableAmount</b> = that price (in ETH, add a tiny bit for safety), <b>nonce</b> = your mined nonce. Write, sign.</li>
+  </ol>
+
+  <h2>Method 4 - run the open-source miner (agents &amp; tinkerers)</h2>
+  <ol>
+    <li><code>npm i js-sha3</code> then <code>node mint.js 0xYourAddress</code> (<a href="mint.js">mint.js</a>) - it mines and prints your mint packet. It never holds your keys.</li>
+    <li>Broadcast the packet from your own wallet/signer. Full machine-readable spec + ABI: <a href="spec.json">spec.json</a>.</li>
+  </ol>
+
+  <h2>Method 5 - just buy one (no minting at all)</h2>
+  Once pieces are minted they trade on OpenSea's secondary market. If you simply want a piece without
+  mining or connecting to a mint page, buy a minted one there. (OpenSea cannot run the primary mint for a
+  proof-of-work contract like this - it has no way to supply your nonce.)
+
+  <h2>For agents</h2>
+  Everything you need - ABI, the exact proof-of-work rule, price/payment, the <code>publicOpen</code> state,
+  the safety rules, and the verified-source links - is in <a href="spec.json">spec.json</a> (also linked in this
+  page's head). Verify the canonical address against the on-chain root; the only call is <code>mint(nonce)</code> payable.
+  <div class="dim" style="margin-top:18px">the label is a hypothesis. the supply is the truth.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "name": "8004 NONCE",
+  "tagline": "you are not mining art. you are mining belief.",
+  "description": "Fully on-chain, proof-of-work generative art on Ethereum L1. Every piece is mined: find a nonce whose keccak hash meets a difficulty floor, then mint it. The winning hash is the art seed. Rarity is emergent - see rarityNote.",
+  "version": "1.0",
+  "chainId": 1,
+  "contract": "0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3",
+  "standard": "ERC-721",
+  "supply": 8004,
+  "url": "https://8004nonce.eth.limo",
+  "mirror": "https://daemon-8004nonce.ar.io",
+  "ens": "8004nonce.eth",
+  "verifiedSource": {
+    "match": "exact",
+    "etherscan": "https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#code",
+    "sourcify": "https://repo.sourcify.dev/1/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3",
+    "blockscout": "https://eth.blockscout.com/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3?tab=contract"
+  },
+  "mint": {
+    "function": "mint(uint256 nonce)",
+    "selector": "0xa0712d68",
+    "payable": true,
+    "price": { "function": "price()", "selector": "0xa035b1fe", "note": "wei; rises with supply; send value >= price; overpay auto-refunded" },
+    "proofOfWork": {
+      "workHash": "keccak256(abi.encodePacked(uint256 chainId, address contract, address minter, uint256 nonce))",
+      "valid": "uint256(workHash) <= (type(uint256).max >> 16): the top 16 bits must be zero",
+      "minterBinding": "workHash binds to msg.sender; a nonce mined for one address is invalid for another (no mempool theft)",
+      "seedIsArt": "the winning hash is the art seed; more leading-zero bits = higher difficulty band"
+    },
+    "preconditions": { "publicOpen": "publicOpen() must be true", "supply": "minted() < 8004" }
+  },
+  "reads": {
+    "publicOpen": "0xba70c515",
+    "minted": "0x4f02c420",
+    "price": "0xa035b1fe",
+    "difficulty(uint256)": "0x46cc92d9"
+  },
+  "safety": {
+    "onlyCall": "The only transaction to send is mint(nonce) payable. Minting requires NO token approval.",
+    "neverApprove": "Never sign approve() or setApprovalForAll() to mint. Any flow that asks for an approval is phishing.",
+    "verifyAddress": "Confirm this contract address against the verified source above before sending value. Trust the on-chain canonical address, not a URL.",
+    "noDrainerSurface": "The contract cannot move your existing assets. Worst case of a wrong interaction is a failed or overpaid mint, never a drain.",
+    "hardwareWallet": "Prefer a hardware wallet. Read price() fresh and cap your spend."
+  },
+  "rarityNote": "Bands (Common/Rare/Epic/Legendary/Mythic) derive from leading-zero bits and are UNCAPPED - supply per band is emergent from how hard minters choose to work. Difficulty changes only the on-chain spin speed, not the art. The labels are a hypothesis.",
+  "genesisCommit": "0x57f7db7efa587faaa4c58dbdd38d4eb6c4834e1dfbff3da1f28e453ecc74dbe7",
+  "reference": { "miner": "mint.js - open-source: mines + builds the mint packet, never holds keys" },
+  "abi": [
+    { "type": "function", "name": "mint", "stateMutability": "payable", "inputs": [ { "name": "nonce", "type": "uint256" } ], "outputs": [] },
+    { "type": "function", "name": "price", "stateMutability": "view", "inputs": [], "outputs": [ { "type": "uint256" } ] },
+    { "type": "function", "name": "publicOpen", "stateMutability": "view", "inputs": [], "outputs": [ { "type": "bool" } ] },
+    { "type": "function", "name": "minted", "stateMutability": "view", "inputs": [], "outputs": [ { "type": "uint256" } ] },
+    { "type": "function", "name": "difficulty", "stateMutability": "view", "inputs": [ { "name": "id", "type": "uint256" } ], "outputs": [ { "type": "uint256" } ] },
+    { "type": "function", "name": "tokenURI", "stateMutability": "view", "inputs": [ { "name": "id", "type": "uint256" } ], "outputs": [ { "type": "string" } ] },
+    { "type": "function", "name": "verify", "stateMutability": "view", "inputs": [ { "name": "id", "type": "uint256" } ], "outputs": [ { "type": "string" } ] },
+    { "type": "function", "name": "ownerOf", "stateMutability": "view", "inputs": [ { "name": "id", "type": "uint256" } ], "outputs": [ { "type": "address" } ] }
+  ]
+}

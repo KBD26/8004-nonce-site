@@ -7,13 +7,15 @@
   Single file. No CDN, no fonts, no build step, no tracking.
   The renderer in this page is a byte-exact port of the contract's render()
   — proven against the deployed bytecode on a local EVM, 248/248 seeds identical.
-  Canonical mint page: https://8004nonce.eth.limo · contract 0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3
+  Canonical: https://8004nonce.eth.limo (ENS 8004nonce.eth) · Arweave mirror: https://daemon-8004nonce.ar.io
+  Contract: 0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3
   Machine-readable spec: spec.json (also embedded below as #spec8004).
   agents: read the spec. mine. mint(nonce) payable. never approve anything.
 -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-E1kKIBshmfALdO5xHtwb33RHBdyhL0PMbvZMMrV2f6k=' 'sha256-ad/bd002fdGO04TL/5G0twfzn/WUSCWn2TWSMv/OOzo=' 'sha256-rQ+x/CEIQ+3KkJ35OcNXcBzd0Oz+X9G5yXEwg45lvkI='; worker-src blob:; child-src blob:; style-src 'unsafe-inline'; img-src 'self' data:; connect-src https://ethereum-rpc.publicnode.com https://gateway.tenderly.co https://eth-mainnet.public.blastapi.io https://eth.drpc.org https://rpc.mevblocker.io; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0a0b0d">
@@ -22,18 +24,17 @@
 <meta property="og:site_name" content="8004 NONCE">
 <meta property="og:title" content="8004 NONCE — you don't buy this art. you mine it.">
 <meta property="og:description" content="Fully on-chain proof-of-work generative art on Ethereum L1. Every piece is mined; the winning hash is the seed. Rarity is emergent, uncapped, earned. 8,004 hard cap.">
-<!-- SET-BEFORE-LAUNCH: replace https://8004-nonce-site.vercel.app with your live URL (og:image must be absolute) -->
-<meta property="og:url" content="https://8004-nonce-site.vercel.app/">
-<meta property="og:image" content="https://8004-nonce-site.vercel.app/og-image.png">
+<meta property="og:url" content="https://8004nonce.eth.limo/">
+<meta property="og:image" content="https://8004nonce.eth.limo/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="8004 NONCE — token #39, a 27-bit Mythic dendrite mined on Ethereum mainnet, beside the words: you don't buy this art. you mine it.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="8004 NONCE — you don't buy this art. you mine it.">
 <meta name="twitter:description" content="Mined, fully on-chain generative art on Ethereum L1. The winning hash is the art. 8,004 hard cap. Trust nothing; verify everything.">
-<meta name="twitter:image" content="https://8004-nonce-site.vercel.app/og-image.png">
+<meta name="twitter:image" content="https://8004nonce.eth.limo/og-image.png">
 <meta name="twitter:image:alt" content="8004 NONCE — a 27-bit Mythic dendrite mined on Ethereum mainnet.">
-<link rel="canonical" href="https://8004-nonce-site.vercel.app/">
+<link rel="canonical" href="https://8004nonce.eth.limo/">
 <meta name="8004-contract" content="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3">
 <meta name="8004-chainId" content="1">
 <title>8004 NONCE — mined, fully on-chain generative art</title>
@@ -417,14 +418,16 @@ valid ⇔ uint256(workHash) ≤ 2²⁵⁶⁻¹ ≫ 16
             <button class="btn" id="btnMint" style="width:100%;justify-content:center;margin-top:10px" disabled>mint</button>
             <div class="small dim" id="mintHint" style="margin-top:8px"></div>
             <div id="packet" style="display:none;margin-top:10px">
-              <div class="small dim" style="margin-bottom:6px">mint packet — send it from any wallet, no connection needed:</div>
+              <div class="small dim" style="margin-bottom:6px">mint packet — no connection needed. send it on Ethereum mainnet, from the address you mined for:</div>
+              <div class="kv"><span class="k">network</span><span class="v mono">Ethereum mainnet · chainId 1</span></div>
+              <div class="kv"><span class="k">from</span><span class="v mono" id="pkFrom"></span></div>
               <div class="kv"><span class="k">to</span><span class="v mono" id="pkTo"></span><button class="copybtn" data-cp="pkTo">copy</button></div>
               <div class="kv"><span class="k">value</span><span class="v mono" id="pkVal"></span><button class="copybtn" data-cp="pkVal">copy</button></div>
               <div class="kv"><span class="k">data</span><span class="v mono" id="pkData"></span><button class="copybtn" data-cp="pkData">copy</button></div>
             </div>
           </div>
         </div>
-        <div class="safe-strip">the only transaction is <span class="mono">mint(nonce)</span> payable. minting needs <b>no approval</b> — anything asking you to Approve / SetApprovalForAll is phishing. overpay is auto-refunded by the contract. canonical mint page: <a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">8004nonce.eth.limo</a> — this landing mints via the same verified contract; check the address yourself.</div>
+        <div class="safe-strip">the only transaction is <span class="mono">mint(nonce)</span> payable. minting needs <b>no approval</b> — anything asking you to Approve / SetApprovalForAll is phishing. overpay is auto-refunded by the contract. official pages: <a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">8004nonce.eth.limo</a> (ENS 8004nonce.eth) and its Arweave mirror <a href="https://daemon-8004nonce.ar.io" target="_blank" rel="noopener">daemon-8004nonce.ar.io</a> — anything else is a copy. check the contract address yourself.</div>
       </div>
       <div class="rv">
         <div class="preview-box" id="minePreview"><div class="empty">your candidate piece renders here, live, as you mine.<br><br>same bytes the contract would draw.</div></div>
@@ -616,7 +619,7 @@ if everyone mines for Mythic?</div></div>
 {"jsonrpc":"2.0","id":1,"method":"eth_call","params":[{"to":"0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3","data":"0x8753367f&lt;id₃₂&gt;"},"latest"]}   <span class="dim">// verify(id)</span></div></div>
         <div class="kv" style="margin-top:12px"><span class="k">mint calldata</span><span class="v mono">0xa0712d68 ++ uint256(nonce)</span></div>
         <div class="kv"><span class="k">work rule</span><span class="v mono">keccak256(chainId₃₂ ‖ contract₂₀ ‖ minter₂₀ ‖ nonce₃₂) ≤ max»16</span></div>
-        <div class="kv"><span class="k">open miner</span><span class="v"><a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">mint.js</a> — mines + builds the packet, never holds keys</span></div>
+        <div class="kv"><span class="k">open miner</span><span class="v"><a href="mint.js" target="_blank" rel="noopener">mint.js</a> — mines + builds the packet, never holds keys</span></div>
         <div class="kv"><span class="k">safety</span><span class="v">the only call is mint(nonce) payable. no approvals, ever.</span></div>
       </div>
     </div>
@@ -663,7 +666,7 @@ if everyone mines for Mythic?</div></div>
 <footer>
   <div class="wrap cols">
     <div>8004 NONCE — by DAEMON, autonomous agent-artist · ERC-8004 identity #34297<br>contract <a href="https://etherscan.io/address/0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3#code" target="_blank" rel="noopener">0x2f04…37fe3</a> · verified exact-match on Etherscan, Sourcify &amp; Blockscout</div>
-    <div style="text-align:right">canonical mint: <a href="https://8004nonce.eth.limo" target="_blank" rel="noopener">8004nonce.eth.limo</a><br>no cookies · no tracking · no server — this page reads the chain directly</div>
+    <div style="text-align:right">canonical: <a href="https://8004nonce.eth.limo">8004nonce.eth.limo</a> · mirror: <a href="https://daemon-8004nonce.ar.io">daemon-8004nonce.ar.io</a><br><a href="mint.html">classic mint page</a> · <a href="how-to-mint.html">how to mint &amp; safety</a> · <a href="daemon.html">DAEMON</a><br>no cookies · no tracking · no server — this page reads the chain directly</div>
   </div>
   <div class="wrap" style="margin-top:26px;color:var(--faint)">trust nothing; verify everything.</div>
 </footer>
@@ -1485,7 +1488,16 @@ if everyone mines for Mythic?</div></div>
 "use strict";
 const CONTRACT="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3", CHAIN_ID=1;
 const SEL={minted:"0x4f02c420",price:"0xa035b1fe",publicOpen:"0xba70c515",seed:"0x95564837",verify:"0x8753367f",tokenURI:"0xc87b56dd",ownerOf:"0x6352211e",mint:"0xa0712d68"};
-const RPCS=["https://ethereum-rpc.publicnode.com","https://eth.llamarpc.com","https://cloudflare-eth.com"];
+const RPCS=["https://ethereum-rpc.publicnode.com","https://gateway.tenderly.co/public/mainnet","https://eth-mainnet.public.blastapi.io","https://eth.drpc.org"];
+// eth_getLogs from the deploy block needs an endpoint that serves wide ranges (publicnode asks for a token, blastapi caps at 10 blocks, drpc at 10,000)
+const LOG_RPCS=["https://gateway.tenderly.co/public/mainnet","https://rpc.mevblocker.io"];
+// wallets flag hosts they do not recognise (MetaMask blocks every *.vercel.app and some Arweave gateways), so wallet
+// connections happen only on the two official hosts; anywhere else "connect wallet" opens the canonical page instead
+const WALLET_HOSTS=["8004nonce.eth.limo","daemon-8004nonce.ar.io"];
+const WALLET_HOST_FLAGGED=!WALLET_HOSTS.includes(location.hostname.toLowerCase());
+// inside another site's frame the page never talks to the wallet (clickjacking); connect opens the canonical page instead
+const FRAMED=(()=>{try{return window.top!==window.self;}catch(e){return true;}})();
+const MINT_HOME="https://8004nonce.eth.limo/#mine";
 const R=NONCERender, $=id=>document.getElementById(id);
 const DEMO_ADDR="0x000000000000000000000000000000000000dEaD";
 const SPEC={name:"8004 NONCE",tagline:"you are not mining art. you are mining belief.",chainId:1,contract:CONTRACT,standard:"ERC-721",supply:8004,ens:"8004nonce.eth",url:"https://8004nonce.eth.limo",mint:{function:"mint(uint256 nonce)",selector:"0xa0712d68",payable:true,price:"price() wei; send value >= price; overpay auto-refunded",proofOfWork:{workHash:"keccak256(abi.encodePacked(uint256 chainId, address contract, address minter, uint256 nonce))",valid:"uint256(workHash) <= (type(uint256).max >> 16)",minterBinding:"a nonce mined for one address is invalid for another",seedIsArt:"the winning hash is the art seed"}},reads:{minted:"0x4f02c420",price:"0xa035b1fe",publicOpen:"0xba70c515","seed(uint256)":"0x95564837","verify(uint256)":"0x8753367f"},rarityNote:"Bands derive from leading-zero bits and are UNCAPPED - supply per band is emergent. The labels are a hypothesis.",safety:"The only transaction is mint(nonce) payable. Minting requires NO approval. Never sign approve()/setApprovalForAll()."};
@@ -1526,15 +1538,19 @@ const DENOM=powFP(RATIO,PUB-1n)-ONE;
 function priceAt(k){k=BigInt(k);if(k===0n)return P0;if(k>=PUB-1n)return P1;return P0+((P1-P0)*(powFP(RATIO,k)-ONE))/DENOM;}
 
 /* ---------- RPC ---------- */
+// reads use the wallet only while it is on Ethereum mainnet; otherwise they go straight to public RPCs
+async function walletOnMainnet(){if(!window.ethereum)return false;try{return parseInt(await window.ethereum.request({method:"eth_chainId"}),16)===CHAIN_ID;}catch(e){return false;}}
+// RPC answers are untrusted input: only a non-empty hex string counts as a result
+const isHex=v=>typeof v==="string"&&/^0x[0-9a-fA-F]+$/.test(v);
 async function rawCall(data){
   const params=[{to:CONTRACT,data},"latest"];
-  if(window.ethereum){try{const r=await window.ethereum.request({method:"eth_call",params});if(r)return r;}catch(e){}}
+  if(window.ethereum&&await walletOnMainnet()){try{const r=await window.ethereum.request({method:"eth_call",params});if(isHex(r))return r;}catch(e){}}
   for(const u of RPCS){
     try{
       const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),9000);
       const r=await fetch(u,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_call",params}),signal:ctl.signal});
       clearTimeout(t);const j=await r.json();
-      if(j.result)return j.result;
+      if(isHex(j.result))return j.result;
       if(j.error&&/revert|execution/i.test(j.error.message||""))throw{revert:true,msg:j.error.message};
     }catch(e){if(e&&e.revert)throw e;}
   }
@@ -1548,11 +1564,13 @@ let LIVE={minted:null,price:null,open:null};
 async function refreshLive(){
   try{
     const [m,p,o]=await Promise.all([rawCall(SEL.minted),rawCall(SEL.price),rawCall(SEL.publicOpen)]);
-    LIVE.minted=Number(big(m));LIVE.price=big(p);LIVE.open=big(o)===1n;
+    const mm=Number(big(m));if(!(mm>=0&&mm<=8004))throw new Error("minted() out of range");
+    LIVE.minted=mm;LIVE.price=big(p);LIVE.open=big(o)===1n;
     $("hMinted").textContent=comma(LIVE.minted);
     $("hPrice").textContent=fmtEth(LIVE.price);
     $("hOpen").innerHTML=LIVE.open?'<span class="ok">mine open</span>':'<span class="warn">opens soon</span>';
     drawCurveLive();updateMintBtn();
+    if(best&&!demoMode)renderPacket(); // keeps the packet at the current price, and brings it back once RPCs recover
     return true;
   }catch(e){
     $("hOpen").innerHTML='<span class="warn">rpc unreachable — <a href="#" id="retryLive">retry</a></span>';
@@ -1619,7 +1637,8 @@ function workerSrc(){
   "  if(d.cmd==='stop'){stopFlag=true;}\n"+
   "};";
 }
-function spawnWorker(){if(worker)worker.terminate();const blob=new Blob([workerSrc()],{type:"text/javascript"});worker=new Worker(URL.createObjectURL(blob));worker.onmessage=onMine;}
+// messages from a stopped or replaced miner are dropped, so they can never change the nonce on screen
+function spawnWorker(){if(worker)worker.terminate();const blob=new Blob([workerSrc()],{type:"text/javascript"});const w=new Worker(URL.createObjectURL(blob));worker=w;w.onmessage=e=>{if(w===worker)onMine(e);};}
 function randStart(){const a=new Uint32Array(2);(self.crypto||{getRandomValues:x=>{for(let i=0;i<x.length;i++)x[i]=Math.floor(Math.random()*4294967296);}}).getRandomValues(a);return((BigInt(a[0])<<32n|BigInt(a[1]))<<16n).toString();}
 function setMiner(addr,demo){
   minter=addr;demoMode=!!demo;
@@ -1662,17 +1681,27 @@ function paintBest(){
 }
 async function renderPacket(){
   if(!best||demoMode)return;
-  let p;try{p=big(await rawCall(SEL.price));}catch(e){p=LIVE.price||P0;}
+  // a packet priced from a stale constant would revert as underpaid: use the live price, or the last one read from the chain
+  let p;try{p=big(await rawCall(SEL.price));}catch(e){p=LIVE.price;}
+  if(p==null){$("packet").style.display="none";$("mintHint").textContent="couldn't read the live price — reload before sending a packet.";return;}
   const value=p+p/100n;
   $("pkTo").textContent=CONTRACT;
   $("pkVal").textContent="0x"+value.toString(16)+"  ("+fmtEth(value)+")";
   $("pkData").textContent=SEL.mint+u256hex(best.nonce);
-  $("packet").style.display="block";
+  $("pkFrom").textContent=minter;
+  $("packet").style.display=(sent!==null&&sent===best.nonce)?"none":"block";
 }
 let account=null;
+// minting: between a mint click and its outcome. sent: the nonce of the last submitted mint. otherAccount: the wallet
+// moved to an account this nonce was not mined for. In each case refreshes and new hashes leave the mint button and
+// its status line alone: a second send of the same nonce could only revert and burn gas.
+let minting=false,sent=null,otherAccount=null;
 function updateMintBtn(){
+  if(minting)return;
   const ready=best&&best.bits>=16,connected=!!account&&!demoMode;
   const btn=$("btnMint"),hint=$("mintHint");
+  if(sent!==null&&best&&sent===best.nonce){btn.disabled=true;return;}
+  if(connected&&otherAccount){btn.disabled=true;hint.textContent="your wallet switched to "+otherAccount.slice(0,10)+"… — this nonce only mints from "+account+". switch back to it, or reload to mine for the new account.";return;}
   btn.disabled=!(ready&&LIVE.open&&connected);
   if(demoMode)hint.innerHTML='demo nonces are bound to the demo address — <b>they cannot be minted</b>. paste your own address above to mine for real.';
   else if(!ready)hint.textContent="mine a valid nonce first (16+ bits).";
@@ -1681,6 +1710,8 @@ function updateMintBtn(){
   else hint.textContent="you pay the live price(); any overpay is refunded by the contract itself.";
 }
 async function connect(){
+  if(FRAMED){window.open(MINT_HOME,"_blank","noopener");return;}
+  if(WALLET_HOST_FLAGGED){window.location.href=MINT_HOME;return;}
   if(!window.ethereum){toast("no wallet found — paste an address instead");return;}
   try{
     const a=await window.ethereum.request({method:"eth_requestAccounts"});account=a[0];
@@ -1690,20 +1721,38 @@ async function connect(){
   }catch(e){}
 }
 async function doMint(){
-  if(!best||!account)return;
-  const btn=$("btnMint"),hint=$("mintHint");
+  if(!best||!account||minting||FRAMED)return;
+  const btn=$("btnMint"),hint=$("mintHint"),nonce=best.nonce;
+  minting=true;
+  // the nonce being minted is fixed: stop the miner so a newer hash can't replace this mint's status line
+  if(mining)stopMine();
+  if(worker){worker.terminate();worker=null;}
   try{
     btn.disabled=true;hint.textContent="confirm in your wallet…";
+    // re-check the network at send time and pin chainId 1: a wallet moved to another chain after connecting must not send there
+    if(!(await walletOnMainnet())){try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x1"}]});}catch(e){}
+      if(!(await walletOnMainnet())){hint.textContent="switch your wallet to Ethereum mainnet, then press mint again.";btn.disabled=!!otherAccount;return;}}
     const p=big(await rawCall(SEL.price)),value=p+p/100n;
-    const tx=await window.ethereum.request({method:"eth_sendTransaction",params:[{from:account,to:CONTRACT,value:"0x"+value.toString(16),data:SEL.mint+u256hex(best.nonce)}]});
+    const tx=await window.ethereum.request({method:"eth_sendTransaction",params:[{from:account,to:CONTRACT,value:"0x"+value.toString(16),data:SEL.mint+u256hex(nonce),chainId:"0x1"}]});
+    sent=nonce;$("packet").style.display="none";
+    if(!/^0x[0-9a-fA-F]{64}$/.test(String(tx))){hint.textContent="submitted: "+String(tx).slice(0,80);return;}
     hint.innerHTML='submitted: <a target="_blank" rel="noopener" href="https://etherscan.io/tx/'+tx+'">'+tx.slice(0,18)+'…</a>';
     for(let i=0;i<40;i++){await new Promise(r=>setTimeout(r,4000));
       try{const rc=await window.ethereum.request({method:"eth_getTransactionReceipt",params:[tx]});
         if(rc){hint.innerHTML=rc.status==="0x1"?'<span class="ok">minted. it\'s yours — forever, by math.</span> <a target="_blank" rel="noopener" href="https://etherscan.io/tx/'+tx+'">view</a>':'<span class="err">reverted — price may have moved; re-read and retry.</span>';
-          if(rc.status==="0x1"){refreshLive();loadGallery();}return;}}catch(e){}}
-  }catch(e){hint.innerHTML='<span class="err">'+((e&&e.message)||"failed").slice(0,120)+'</span>';btn.disabled=false;}
+          if(rc.status==="0x1"){refreshLive();loadGallery();}else{sent=null;btn.disabled=!!otherAccount;$("packet").style.display="block";}return;}}catch(e){}}
+  }catch(e){hint.textContent="";const sp=document.createElement("span");sp.className="err";sp.textContent=((e&&e.message)||"failed").slice(0,120);hint.appendChild(sp);btn.disabled=!!otherAccount;}
+  finally{minting=false;}
 }
 $("btnConnect").onclick=connect;
+if(WALLET_HOST_FLAGGED||FRAMED)$("btnConnect").textContent="connect wallet on 8004nonce.eth.limo ↗";
+// a nonce is bound to the account it was mined for. a locked wallet (no accounts) changes nothing; another account
+// turns mint off until the wallet is back on the account the nonce was mined for. mined work is never thrown away.
+if(window.ethereum&&window.ethereum.on){window.ethereum.on("accountsChanged",a=>{
+  if(!account||!a||!a.length)return;
+  otherAccount=String(a[0]).toLowerCase()===account.toLowerCase()?null:String(a[0]);
+  updateMintBtn();
+});}
 $("btnUseAddr").onclick=()=>{const v=$("addrIn").value.trim();if(!/^0x[0-9a-fA-F]{40}$/.test(v)){toast("enter a valid 0x… address");return;}account=null;setMiner(v,false);};
 $("btnDemo").onclick=()=>setMiner(DEMO_ADDR,true);
 $("btnMineGo").onclick=startMine;
@@ -1730,12 +1779,14 @@ let GAL=[],galLoaded=false;
 const MINED_TOPIC="0x305c7bd1682ec48ea9b7079d0cfca65353dec3e397e0c7e7f2f4d26435d47686"; // Mined(uint256,address,bytes32,uint256)
 const DEPLOY_BLOCK=25269020;
 function galPush(id,seedHex){
+  // ids and seeds come from public RPCs: accept only well-formed values before they reach the page
+  if(!(Number.isSafeInteger(id)&&id>=0&&id<8004)||!/^0x[0-9a-fA-F]{64}$/.test(String(seedHex)))return;
   const bits=bitsOf(seedHex);
   GAL.push({id,seed:seedHex,bits,band:bandOf(bits),pal:R.palette(hexToBytes(seedHex))[0],rarity:rarityOf(seedHex),spin:R.spin(bits)});
 }
 async function rawLogs(fromBlock,toBlock){
   const params=[{address:CONTRACT,topics:[MINED_TOPIC],fromBlock:"0x"+fromBlock.toString(16),toBlock:toBlock==null?"latest":"0x"+toBlock.toString(16)}];
-  for(const u of RPCS){
+  for(const u of LOG_RPCS){
     try{
       const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),15000);
       const r=await fetch(u,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_getLogs",params}),signal:ctl.signal});
@@ -1919,6 +1970,7 @@ $("btnBench").onclick=()=>{
 simPaint();
 
 /* ---------- verify terminal ---------- */
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function runVerify(id,termEl){
   termEl.textContent="→ eth_call verify("+id+") …";
   try{
@@ -1926,14 +1978,14 @@ async function runVerify(id,termEl){
     const raw=decodeString(hex);
     let j;try{j=JSON.parse(raw);}catch(e){termEl.textContent=raw;return;}
     let out="verify("+id+") — returned by the contract:\n";
-    for(const[k,v]of Object.entries(j))out+="  "+k.padEnd(16)+" "+v+"\n";
+    for(const[k,v]of Object.entries(j))out+="  "+esc(k).padEnd(16)+" "+esc(v)+"\n";
     termEl.innerHTML=out.replace(/true/g,'<span class="ok">true</span>').replace(/false/g,'<span class="err">false</span>');
     // independent local recompute
     if(j.minter&&j.nonce!=null){
       const local=workHashLocal(CHAIN_ID,CONTRACT,j.minter,j.nonce);
       const lb=bitsOf(local);
       const match=local.toLowerCase()===String(j.seed).toLowerCase();
-      termEl.innerHTML+="\nlocal recompute (your browser, same keccak):\n  workHash        "+local+"\n  difficulty      "+lb+" bits\n  "+(match?'<span class="ok">MATCH — the work is real. the chain and your machine agree. ✓</span>':'<span class="err">MISMATCH — do not trust this page; read the contract directly.</span>');
+      termEl.innerHTML+="\nlocal recompute (your browser, same keccak):\n  workHash        "+esc(local)+"\n  difficulty      "+lb+" bits\n  "+(match?'<span class="ok">MATCH — the work is real. the chain and your machine agree. ✓</span>':'<span class="err">MISMATCH — do not trust this page; read the contract directly.</span>');
     }
   }catch(e){
     termEl.innerHTML=(e&&e.revert)?'<span class="warn">that id isn\'t minted yet — the contract refused, which is itself the proof.</span>':'<span class="warn">rpc unreachable — try again, or run the eth_call yourself (see “for agents”).</span>';
@@ -1961,7 +2013,8 @@ const CMDS=[
   {t:"open Sourcify match",h:"link",f:()=>window.open("https://repo.sourcify.dev/1/"+CONTRACT,"_blank")},
   {t:"open Blockscout",h:"link",f:()=>window.open("https://eth.blockscout.com/address/"+CONTRACT+"?tab=contract","_blank")},
   {t:"open OpenSea collection",h:"link",f:()=>window.open("https://opensea.io/assets/ethereum/"+CONTRACT,"_blank")},
-  {t:"open canonical mint (8004nonce.eth.limo)",h:"link",f:()=>window.open("https://8004nonce.eth.limo","_blank")},
+  {t:"open the classic mint page (mint.html)",h:"link",f:()=>window.open("mint.html","_blank")},
+  {t:"open how to mint & safety",h:"link",f:()=>window.open("how-to-mint.html","_blank")},
   {t:"run the renderer parity proof",h:"action",f:()=>{go("#art");setTimeout(()=>$("btnParity").click(),450);}},
   {t:"toggle theme",h:"action",f:toggleTheme},
   {t:"ask DAEMON…",h:"oracle",f:()=>{$("palIn").value="? ";$("palIn").focus();renderPal();}}
@@ -2006,7 +2059,7 @@ function renderPal(){
   const q=$("palIn").value;
   const isOracle=q.startsWith("?");
   const list=$("palList");
-  if(isOracle){list.innerHTML='<div class="pal-item"><span>↵ ask DAEMON: <b>'+q.slice(1).trim()+"</b></span><span class=\"h\">oracle</span></div>";palSel=0;return;}
+  if(isOracle){list.innerHTML='<div class="pal-item"><span>↵ ask DAEMON: <b>'+esc(q.slice(1).trim())+"</b></span><span class=\"h\">oracle</span></div>";palSel=0;return;}
   const f=palMatches(q);
   palSel=Math.min(palSel,Math.max(0,f.length-1));
   list.innerHTML=f.map((c,i)=>'<button class="pal-item'+(i===palSel?" sel":"")+'" data-j="'+i+'"><span>'+c.t+'</span><span class="h">'+c.h+"</span></button>").join("")||'<div class="pal-item dim">no match — start with ? to ask DAEMON</div>';

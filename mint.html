@@ -1,0 +1,100 @@
+<!doctype html>
+<!--
+  8004 NONCE - fully on-chain proof-of-work mint.
+  you cannot buy what everyone is buying.
+  genesis commit: 0x57f7db7efa587faaa4c58dbdd38d4eb6c4834e1dfbff3da1f28e453ecc74dbe7
+  agents: machine-readable spec at spec.json (also linked in head + embedded below as #8004-spec).
+  CSP-safe: bundled keccak (sha3.js) + external app.js / worker.js, no inline code or CDN.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; worker-src 'self'; child-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src https://ethereum-rpc.publicnode.com https://gateway.tenderly.co https://eth-mainnet.public.blastapi.io https://eth.drpc.org; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8004 NONCE - mine to mint</title>
+<link rel="alternate" type="application/json" href="spec.json" title="8004 NONCE machine-readable spec">
+<meta name="8004-contract" content="0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3">
+<meta name="8004-chainId" content="1">
+<meta name="8004-spec" content="spec.json">
+<style>
+  :root{--bg:#0a0b0d;--panel:#111419;--line:#1d222a;--ink:#d4d8de;--dim:#7f868c;--accent:#5ec8d8;--ok:#5cca96;--warn:#d6a25a;--err:#de6e6e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1.5;padding:24px}
+  .wrap{max-width:640px;margin:0 auto}
+  h1{font-size:20px;letter-spacing:3px;font-weight:600;margin:0 0 2px;cursor:default;user-select:none}
+  .tag{color:var(--dim);font-size:12px;margin-bottom:20px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+  .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:3px 0}
+  .row .k{color:var(--dim)} .row .v{text-align:right;word-break:break-all}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  button{background:var(--accent);color:#04181c;border:0;border-radius:8px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;width:100%}
+  button.alt{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  button.mini{width:auto;padding:4px 10px;font-size:11px}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  input{width:100%;background:#000;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit;padding:10px;margin:8px 0}
+  .mono{font-size:12px;color:var(--dim);word-break:break-all}
+  .big{font-size:34px;font-weight:600;letter-spacing:1px}
+  .center{text-align:center}.hint{font-size:12px;color:var(--dim);margin-top:8px}
+  .ok{color:var(--ok)}.warn{color:var(--warn)}.err{color:var(--err)}
+  .safe{font-size:11px;color:var(--dim);border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+  .pk{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;margin:5px 0}
+  .pk .val{color:var(--ink);word-break:break-all;text-align:left;flex:1}
+</style>
+<script type="application/json" id="8004-spec">
+{"name":"8004 NONCE","contract":"0x2f041d75f614f1d8e99a5267e7f08e9fa0c37fe3","chainId":1,"mint":"mint(uint256 nonce) payable","selector":"0xa0712d68","pow":"keccak256(abi.encodePacked(uint256 chainId,address contract,address minter,uint256 nonce)) top 16 bits zero","price":"price() wei, send value>=price, overpay refunded","safety":"only call is mint(nonce) payable; never sign approve/setApprovalForAll","spec":"spec.json","ens":"8004nonce.eth"}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="title">8004&nbsp;NONCE</h1>
+  <div class="tag">you are not mining art. you are mining belief. &nbsp;·&nbsp; <a href="./">main site</a> &nbsp;·&nbsp; <a href="how-to-mint.html">how to mint &amp; safety</a></div>
+
+  <div class="panel">
+    <div class="row"><span class="k">contract</span><span class="v"><a id="ca" target="_blank"></a></span></div>
+    <div class="row"><span class="k">verified source</span><span class="v"><a id="lk-es" target="_blank">Etherscan</a> · <a id="lk-sc" target="_blank">Sourcify</a> · <a id="lk-bs" target="_blank">Blockscout</a></span></div>
+    <div class="row"><span class="k">minted</span><span class="v" id="st-minted">-</span></div>
+    <div class="row"><span class="k">price now</span><span class="v" id="st-price">-</span></div>
+    <div class="row"><span class="k">status</span><span class="v" id="st-open">-</span></div>
+    <div class="safe">100% on-chain, mined + rendered by the contract. This page never asks for your seed phrase - you sign one standard <span class="mono">mint(nonce)</span>; inspect it before approving. A real mint never asks you to Approve / Set Approval For All. Verify the address above matches the verified source. Official pages: <b>8004nonce.eth.limo</b> (ENS <b>8004nonce.eth</b>) and its Arweave mirror <b>daemon-8004nonce.ar.io</b> &mdash; bookmark one; anything else is a copy.<div class="mono" style="margin-top:6px">genesis commit 0x57f7&#8230;dbe7</div></div>
+  </div>
+
+  <div class="panel" id="choosePanel">
+    <button id="btnConnect">Connect wallet</button>
+    <div class="hint center" style="margin-top:10px"><a id="noConnect" href="#">or mine without connecting &rarr;</a></div>
+    <div id="addrBox" style="display:none">
+      <input id="addrIn" placeholder="paste your wallet address (0x...)" spellcheck="false">
+      <button id="btnUseAddr" class="alt">Mine for this address</button>
+      <div class="hint">No connection - you'll mine here and mint from your own wallet with the packet we hand you.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="minePanel" style="display:none">
+    <div class="row"><span class="k">mining for</span><span class="v mono" id="me">-</span></div>
+    <div class="center" style="margin:14px 0">
+      <div class="big"><span id="bestBits">&mdash;</span> <span style="font-size:14px;color:var(--dim)">bits</span></div>
+      <div class="hint" id="mineStat">tap Mine for a random nonce</div>
+    </div>
+    <button id="btnMine">Mine</button>
+    <div class="hint">Each Mine gives a fresh random nonce (16+). Re-mine to roll a different one. Want to aim higher? The open-source <a href="mint.js">mint.js</a> grinds any difficulty. <span id="spinNote"></span></div>
+  </div>
+
+  <div class="panel" id="mintPanel" style="display:none">
+    <div class="row"><span class="k">your nonce</span><span class="v mono" id="theNonce">-</span></div>
+    <div class="row"><span class="k">proof (hash)</span><span class="v mono" id="theHash">-</span></div>
+    <button id="btnMint" disabled style="margin-top:6px">Mint</button>
+    <div class="hint" id="mintHint"></div>
+    <div id="packet" style="display:none;border-top:1px solid var(--line);margin-top:12px;padding-top:12px">
+      <div class="hint" style="margin:0 0 6px">Mint packet - or send this yourself from any wallet (<a href="how-to-mint.html">how &rarr;</a>):</div>
+      <div class="pk"><span class="k">to</span><span class="val" id="pkTo"></span><button class="mini alt" data-cp="pkTo">copy</button></div>
+      <div class="pk"><span class="k">value</span><span class="val" id="pkVal"></span><button class="mini alt" data-cp="pkVal">copy</button></div>
+      <div class="pk"><span class="k">data</span><span class="val" id="pkData"></span><button class="mini alt" data-cp="pkData">copy</button></div>
+    </div>
+  </div>
+
+  <div class="tag center" style="margin-top:18px">8004 total · proof-of-work · price rises with supply · <a href="how-to-mint.html">other ways to mint</a></div>
+</div>
+
+<script src="sha3.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
